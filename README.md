@@ -1,29 +1,17 @@
-# README #
+# JCORE Script Runner Plugin #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+A WordPress plugin to easily allow manual running of scripts for maintenance and utility.
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+Install the plugin in your project. Either as a submodule, or just through the zip file.
 
-### Contribution guidelines ###
+Wherever you want in you code (Project theme, separate plugin) add the functions you want to run. Any output you want shown to the user should be echoed.
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+Use the `jcore_runner_functions` filter to add your function to the runner. The filter gives you one array that you can add the functions to. Use a unique ID as key and add an array with: 
+`
+array(
+    'title' => 'The title shown in the runner',
+    'callback' => '\namespace\name_of_function',
+) 
+`
