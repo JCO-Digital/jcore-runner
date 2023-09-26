@@ -1,13 +1,14 @@
 <?php
-
-/*
-Plugin Name: JCORE Script Runner
-Description: Plugin for running functions from the backend.
-Plugin URI: http://jco.fi
-Author: JCO Digital
-Version: 0.1.0
-Author URI: http://jco.fi
-*/
+/**
+ * Plugin Name: JCORE Script Runner
+ * Description: Plugin for running functions from the backend.
+ * Plugin URI: http://jco.fi
+ * Author: JCO Digital
+ * Version: 0.1.1
+ * Author URI: http://jco.fi
+ *
+ * @package jcore_runner
+ */
 
 namespace jcore_runner;
 
@@ -22,8 +23,8 @@ require_once 'rest-runner.php';
 function add_menu() {
 	add_submenu_page(
 		'tools.php', // Parent slug.
-		'Script Runner', // Page Title.
-		'JCORE Script Runner', // Menu Title.
+		apply_filters( 'jcore_runner_title', 'Script Runner' ), // Page Title.
+		apply_filters( 'jcore_runner_menu', 'JCORE Script Runner' ), // Menu Title.
 		'manage_options', // Capabilities.
 		'jcore-runner', // Menu Slug.
 		'\jcore_runner\show_admin_page' // Page render callback.
@@ -39,11 +40,11 @@ function show_admin_page() {
 	wp_enqueue_script( 'jcore_runner' );
 	wp_enqueue_style( 'jcore_runner' );
 
-	echo '<h2>JCORE Runner Scripts</h2>';
+	echo '<h2>' . esc_html( apply_filters( 'jcore_runner_title', 'Script Runner' ) ) . '</h2>';
 	echo '<div id="jcore-runner-buttons">';
 	foreach ( \apply_filters( 'jcore_runner_functions', array() ) as $name => $data ) {
-		echo '<button data-jcore-script="' . $name . '">';
-		echo $data['title'];
+		echo '<button data-jcore-script="' . esc_html( $name ) . '">';
+		echo esc_html( $data['title'] );
 		echo '</button>';
 	}
 	echo '</div>';
@@ -51,5 +52,3 @@ function show_admin_page() {
 	echo '<div id="jcore-runner-progress">Nothing running</div>';
 	echo '<pre id="jcore-runner-output"></pre>';
 }
-
-

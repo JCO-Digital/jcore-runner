@@ -39,3 +39,8 @@
     margin-right: 4rem;
     display: none;
 }
+
+#jcore-runner-buttons {
+  display: flex;
+  gap: 1rem;
+}

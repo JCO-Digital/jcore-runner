@@ -2,6 +2,10 @@ const jcoreRunnerButtons = [];
 
 function jcoreRunnerCallEndpoint(script, page = 1) {
   const data = { script, page };
+  const output = document.getElementById("jcore-runner-output");
+  if (page === 1) {
+    output.innerHTML = "";
+  }
   jcoreRunnerRunnig(data);
   const options = {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -15,16 +19,20 @@ function jcoreRunnerCallEndpoint(script, page = 1) {
     .then((response) => response.json())
     .then((data) => {
       jcoreRunnerRunnig(false);
-      const output = document.getElementById("jcore-runner-output");
       if (data.output) {
-        output.innerHTML = data.output;
+        const shouldScroll =
+          output.scrollTop + output.offsetHeight === output.scrollHeight;
+        output.innerHTML += data.output;
+        if (shouldScroll) {
+          output.scrollTop = output.scrollHeight;
+        }
       }
       if (data.nextPage) {
         jcoreRunnerCallEndpoint(script, data.nextPage);
       }
     })
     .catch((error) => {
-        jcoreRunnerRunnig(false);
+      jcoreRunnerRunnig(false);
     });
 }
 
