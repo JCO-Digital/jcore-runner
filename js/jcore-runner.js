@@ -27,6 +27,17 @@ function jcoreRunnerCallEndpoint(script, page = 1) {
           output.scrollTop = output.scrollHeight;
         }
       }
+      if (data.return && typeof data.return === "object") {
+        Object.keys(data.return).forEach((key) => {
+          const value = data.return[key];
+          console.debug(value);
+          const status = document.getElementById(`jcore-runner-return-${key}`);
+          console.debug(status);
+          if (value && status) {
+            status.innerHTML = value;
+          }
+        });
+      }
       if (data.nextPage) {
         jcoreRunnerCallEndpoint(script, data.nextPage);
       }

@@ -50,5 +50,27 @@ function show_admin_page() {
 	echo '</div>';
 	echo '<div id="jcore-runner-spinner"></div>';
 	echo '<div id="jcore-runner-progress">Nothing running</div>';
+	echo '<div id="jcore-runner-return">';
+	foreach ( get_status() as $id => $data ) {
+		echo '<h3>' . esc_html( $data['title'] ) . '</h3>';
+		echo '<div id="jcore-runner-return-' . esc_html( $id ) . '">';
+		echo esc_html( $data['content'] );
+		echo '</div>';
+	}
+	echo '</div>';
 	echo '<pre id="jcore-runner-output"></pre>';
+}
+
+function get_status() {
+	$default = array(
+		'status' => __( 'Status', 'jcore_runner' ),
+	);
+	$status  = array();
+	foreach ( \apply_filters( 'jcore_runner_status', $default ) as $key => $value ) {
+		$status[ $key ] = array(
+			'title'   => $value,
+			'content' => \apply_filters( 'jcore_runner_status_' . $key, '' ),
+		);
+	}
+	return $status;
 }

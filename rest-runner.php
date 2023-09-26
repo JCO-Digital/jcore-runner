@@ -53,6 +53,7 @@ function run_script( $request ) {
 		$data = array(
 			'status' => 'ok',
 			'output' => strip_tags( $output ),
+			'return' => $return['return'] ?? array(),
 		);
 		if ( ! empty( $return['next_page'] ) ) {
 			$data['nextPage'] = $return['next_page'];

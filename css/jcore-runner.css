@@ -44,3 +44,9 @@
   display: flex;
   gap: 1rem;
 }
+
+#jcore-runner-return > div {
+  background-color: #bdc5c9;
+  min-height: 23px;
+  width: 98%;
+}
