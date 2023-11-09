@@ -1,0 +1,29 @@
+{
+		"name": "jcodigital/jcore-runner",
+		"type": "wordpress-plugin",
+		"license": "MIT",
+		"authors": [
+				{
+						"name": "JCo Digital",
+						"email": "support@jco.fi"
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.12.0"
+    },
+    "minimum-stability": "stable",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.5",
+        "wp-coding-standards/wpcs": "^2.3",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
+    },
+		"config": {
+				"allow-plugins": {
+						"composer/installers": true,
+						"dealerdirect/phpcodesniffer-composer-installer": true
+				},
+				"platform": {
+						"php": "8.0"
+				}
+		}
+}
