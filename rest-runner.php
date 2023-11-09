@@ -29,13 +29,13 @@ function run_script( $request ) {
 	$json      = $request->get_json_params();
 
 	if ( empty( $functions[ $json['script'] ] ) ) {
-		$response->set_code( 404 );
+		$response->set_status( 404 );
 		return $response;
 	}
 
 	$callback = $functions[ $json['script'] ]['callback'] ?? false;
-	if ( ! $callback || ! function_exists( $callback ) ) {
-		$response->set_code( 404 );
+	if ( ! $callback || ! is_callable( $callback ) ) {
+		$response->set_status( 404 );
 		return $response;
 	}
 
