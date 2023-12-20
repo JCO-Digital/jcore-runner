@@ -1,6 +1,6 @@
 {
   "name": "jcore/runner",
-	"description": "JCORE Script Runner. A WordPress plugin that adds a framework to run backend maintenance scripts.",
+  "description": "JCORE Script Runner. A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-only",
   "authors": [
