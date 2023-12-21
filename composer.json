@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "composer/installers": "^1.12.0"
+    "composer/installers": "^2.2.0"
   },
   "minimum-stability": "stable",
   "require-dev": {
