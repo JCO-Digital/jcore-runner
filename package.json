@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "prettier --check .",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "preversion": "npm test",
+    "version": "",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
