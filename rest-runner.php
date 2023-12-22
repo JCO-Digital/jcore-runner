@@ -1,12 +1,21 @@
 <?php
+/**
+ * Rest backend functions.
+ *
+ * @package jcore_runner
+ */
 
-namespace jcore_runner;
+namespace Jcore\Runner;
 
-add_action( 'rest_api_init', 'jcore_runner\add_endpoints' );
+use WP_REST_Response;
+
+add_action( 'rest_api_init', 'Jcore\Runner\add_endpoints' );
 
 const NS = 'jcore_runner/v1';
 
 /**
+ * Define rest endpoints.
+ *
  * @return void
  */
 function add_endpoints(): void {
@@ -15,7 +24,7 @@ function add_endpoints(): void {
 		'/run',
 		array(
 			'methods'             => 'POST',
-			'callback'            => 'jcore_runner\run_script',
+			'callback'            => 'Jcore\Runner\run_script',
 			'permission_callback' => function () {
 				return current_user_can( 'manage_options' );
 			},
@@ -23,6 +32,12 @@ function add_endpoints(): void {
 	);
 }
 
+/**
+ * Endpoint that runs the defined function.
+ *
+ * @param mixed $request Rest request.
+ * @return WP_REST_Response
+ */
 function run_script( $request ) {
 	$functions = \apply_filters( 'jcore_runner_functions', array() );
 	$response  = new \WP_REST_Response();
@@ -46,8 +61,8 @@ function run_script( $request ) {
 	// Store output in variable, and discard and end the buffer.
 	$output = ob_get_clean();
 
-	if ( $return === false || ! empty( $return['status'] ) && $return['status'] !== 'ok' ) {
-		$response->set_code( 400 );
+	if ( false === $return || ! empty( $return['status'] ) && 'ok' !== $return['status'] ) {
+		$response->set_status( 400 );
 		$response->set_data( $return );
 	} else {
 		$data = array(
@@ -55,6 +70,13 @@ function run_script( $request ) {
 			'output' => strip_tags( $output ),
 			'return' => $return['return'] ?? array(),
 		);
+		if ( ! empty( $return['export'] ) ) {
+			// Function exports data.
+			$export = new Export( $json['script'], $json['export_filename'] ?? '' );
+			foreach ($return['export'] as $row) {
+				$export->add_row($row);
+			}
+		}
 		if ( ! empty( $return['next_page'] ) ) {
 			$data['nextPage'] = $return['next_page'];
 		}

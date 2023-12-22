@@ -10,9 +10,9 @@
  * @package jcore_runner
  */
 
-namespace jcore_runner;
+namespace Jcore\Runner;
 
-add_action( 'admin_menu', '\jcore_runner\add_menu' );
+add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
 
 require_once 'utils.php';
 require_once 'rest-runner.php';
@@ -27,7 +27,7 @@ function add_menu() {
 		apply_filters( 'jcore_runner_menu', 'JCORE Script Runner' ), // Menu Title.
 		'manage_options', // Capabilities.
 		'jcore-runner', // Menu Slug.
-		'\jcore_runner\show_admin_page' // Page render callback.
+		'\Jcore\Runner\show_admin_page' // Page render callback.
 	);
 }
 
@@ -61,6 +61,9 @@ function show_admin_page() {
 	echo '<pre id="jcore-runner-output"></pre>';
 }
 
+/**
+ * Get default status for the different scripts.
+ */
 function get_status() {
 	$default = array(
 		'status' => __( 'Status', 'jcore_runner' ),

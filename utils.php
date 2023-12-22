@@ -1,6 +1,6 @@
 <?php
 
-namespace jcore_runner;
+namespace Jcore\Runner;
 
 /**
  * Register script wrapper.
