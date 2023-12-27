@@ -1,7 +1,7 @@
 const jcoreRunnerButtons = [];
 
-function jcoreRunnerCallEndpoint(script, page = 1) {
-  const data = { script, page };
+function jcoreRunnerCallEndpoint(script, page = 1, exportFile = "") {
+  const data = { script, page, exportFile };
   const output = document.getElementById("jcore-runner-output");
   if (page === 1) {
     output.innerHTML = "";
@@ -30,16 +30,14 @@ function jcoreRunnerCallEndpoint(script, page = 1) {
       if (data.return && typeof data.return === "object") {
         Object.keys(data.return).forEach((key) => {
           const value = data.return[key];
-          console.debug(value);
           const status = document.getElementById(`jcore-runner-return-${key}`);
-          console.debug(status);
           if (value && status) {
             status.innerHTML = value;
           }
         });
       }
       if (data.nextPage) {
-        jcoreRunnerCallEndpoint(script, data.nextPage);
+        jcoreRunnerCallEndpoint(script, data.nextPage, data.exportFile??"");
       }
     })
     .catch((error) => {

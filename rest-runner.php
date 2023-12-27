@@ -72,10 +72,12 @@ function run_script( $request ) {
 		);
 		if ( ! empty( $return['export'] ) ) {
 			// Function exports data.
-			$export = new Export( $json['script'], $json['export_filename'] ?? '' );
-			foreach ($return['export'] as $row) {
-				$export->add_row($row);
+			$export = new Export( $json['script'], $json['exportFile'] ?? '' );
+			foreach ( $return['export'] as $row ) {
+				$export->add_row( $row );
 			}
+			$export->write_file_data();
+			$data['exportFile'] = $export->get_filename();
 		}
 		if ( ! empty( $return['next_page'] ) ) {
 			$data['nextPage'] = $return['next_page'];
