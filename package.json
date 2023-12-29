@@ -7,14 +7,14 @@
     "test": "prettier --check .",
     "prettier": "prettier --write .",
     "preversion": "npm test",
-    "version": "",
+    "version": "node versionSync.mjs && git add jcore-runner-php",
     "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JCO-Digital/jcore-runner.git"
   },
-  "author": "",
+  "author": "JCO Digital",
   "license": "GPL-2.0-only",
   "bugs": {
     "url": "https://github.com/JCO-Digital/jcore-runner/issues"
