@@ -43,6 +43,14 @@
 #jcore-runner-buttons {
   display: flex;
   gap: 1rem;
+  
+  & input {
+    width: 160px;
+
+    &[type=number] {
+      width: 70px;
+    }
+  }
 }
 
 #jcore-runner-return > div {

@@ -1,9 +1,18 @@
 const jcoreRunnerButtons = [];
 
-function jcoreRunnerCallEndpoint(script, page = 1, exportFile = "") {
-  const data = { script, page, exportFile };
+function jcoreRunnerCallEndpoint(script, settings) {
+  const data = Object.assign(
+    {
+      script,
+      page: 1,
+      clear: false,
+      exportFile: "",
+      input: {} 
+    },
+    settings
+  );
   const output = document.getElementById("jcore-runner-output");
-  if (page === 1) {
+  if (data.clear) {
     output.innerHTML = "";
   }
   jcoreRunnerRunnig(data);
@@ -17,27 +26,32 @@ function jcoreRunnerCallEndpoint(script, page = 1, exportFile = "") {
   };
   fetch(wpApiSettings.root + "jcore_runner/v1/run/", options)
     .then((response) => response.json())
-    .then((data) => {
+    .then((jsonData) => {
       jcoreRunnerRunnig(false);
-      if (data.output) {
+      if (jsonData.output) {
         const shouldScroll =
           output.scrollTop + output.offsetHeight === output.scrollHeight;
-        output.innerHTML += data.output;
+        output.innerHTML += jsonData.output;
         if (shouldScroll) {
           output.scrollTop = output.scrollHeight;
         }
       }
-      if (data.return && typeof data.return === "object") {
-        Object.keys(data.return).forEach((key) => {
-          const value = data.return[key];
+      if (jsonData.return && typeof jsonData.return === "object") {
+        Object.keys(jsonData.return).forEach((key) => {
+          const value = jsonData.return[key];
           const status = document.getElementById(`jcore-runner-return-${key}`);
           if (value && status) {
             status.innerHTML = value;
           }
         });
       }
-      if (data.nextPage) {
-        jcoreRunnerCallEndpoint(script, data.nextPage, data.exportFile??"");
+      if (jsonData.nextPage) {
+        const settings = {
+          page: jsonData.nextPage,
+          exportFile: jsonData.exportFile,
+          input: Object.assign(data.input,jsonData.input),
+        };
+        jcoreRunnerCallEndpoint(script, settings);
       }
     })
     .catch((error) => {
@@ -64,7 +78,11 @@ window.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("[data-jcore-script]").forEach((element, i) => {
     jcoreRunnerButtons.push(element);
     element.addEventListener("click", () => {
-      jcoreRunnerCallEndpoint(element.dataset.jcoreScript);
+      const input = {};
+      document.querySelectorAll(`[data-jcore-input="${element.dataset.jcoreScript}"]`).forEach(field => {
+        input[field.name] = field.value;
+      });
+      jcoreRunnerCallEndpoint(element.dataset.jcoreScript, {input, clear: true});
     });
   });
 });

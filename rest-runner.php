@@ -57,7 +57,7 @@ function run_script( $request ) {
 	// Capture output from function by starting output buffer.
 	ob_start();
 	// Execute function, passing the json body to it.
-	$return = $callback( $json );
+	$return = call_user_func( $callback, $json );
 	// Store output in variable, and discard and end the buffer.
 	$output = ob_get_clean();
 
@@ -67,7 +67,7 @@ function run_script( $request ) {
 	} else {
 		$data = array(
 			'status' => 'ok',
-			'output' => strip_tags( $output ),
+			'output' => wp_strip_all_tags( $output ),
 			'return' => $return['return'] ?? array(),
 		);
 		if ( ! empty( $return['export'] ) ) {
@@ -78,6 +78,9 @@ function run_script( $request ) {
 			}
 			$export->write_file_data();
 			$data['exportFile'] = $export->get_filename();
+		}
+		if ( ! empty( $return['input'] ) ) {
+			$data['input'] = $return['input'];
 		}
 		if ( ! empty( $return['next_page'] ) ) {
 			$data['nextPage'] = $return['next_page'];

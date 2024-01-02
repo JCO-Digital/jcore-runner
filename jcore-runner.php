@@ -44,6 +44,15 @@ function show_admin_page() {
 	echo '<h2>' . esc_html( apply_filters( 'jcore_runner_title', 'Script Runner' ) ) . '</h2>';
 	echo '<div id="jcore-runner-buttons">';
 	foreach ( \apply_filters( 'jcore_runner_functions', array() ) as $name => $data ) {
+		if ( $data['input'] ) {
+			foreach ( $data['input'] as $field => $input ) {
+				$type = match ( $input['type'] ) {
+					'number' => 'number',
+					default => 'text',
+				};
+				echo esc_html( $input['title'] ) . ': <input type="' . esc_html( $type ) . '" data-jcore-input="' . esc_html( $name ) . '" name="' . esc_html( $field ) . '" value="' . esc_html( $input['default'] ) . '" />';
+			}
+		}
 		echo '<button data-jcore-script="' . esc_html( $name ) . '">';
 		echo esc_html( $data['title'] );
 		echo '</button>';
