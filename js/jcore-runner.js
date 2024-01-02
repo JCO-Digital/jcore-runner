@@ -7,9 +7,9 @@ function jcoreRunnerCallEndpoint(script, settings) {
       page: 1,
       clear: false,
       exportFile: "",
-      input: {} 
+      input: {},
     },
-    settings
+    settings,
   );
   const output = document.getElementById("jcore-runner-output");
   if (data.clear) {
@@ -49,7 +49,7 @@ function jcoreRunnerCallEndpoint(script, settings) {
         const settings = {
           page: jsonData.nextPage,
           exportFile: jsonData.exportFile,
-          input: Object.assign(data.input,jsonData.input),
+          input: Object.assign(data.input, jsonData.input),
         };
         jcoreRunnerCallEndpoint(script, settings);
       }
@@ -79,10 +79,15 @@ window.addEventListener("DOMContentLoaded", function () {
     jcoreRunnerButtons.push(element);
     element.addEventListener("click", () => {
       const input = {};
-      document.querySelectorAll(`[data-jcore-input="${element.dataset.jcoreScript}"]`).forEach(field => {
-        input[field.name] = field.value;
+      document
+        .querySelectorAll(`[data-jcore-input="${element.dataset.jcoreScript}"]`)
+        .forEach((field) => {
+          input[field.name] = field.value;
+        });
+      jcoreRunnerCallEndpoint(element.dataset.jcoreScript, {
+        input,
+        clear: true,
       });
-      jcoreRunnerCallEndpoint(element.dataset.jcoreScript, {input, clear: true});
     });
   });
 });

@@ -43,11 +43,11 @@
 #jcore-runner-buttons {
   display: flex;
   gap: 1rem;
-  
+
   & input {
     width: 160px;
 
-    &[type=number] {
+    &[type="number"] {
       width: 70px;
     }
   }
