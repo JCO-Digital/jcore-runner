@@ -31,7 +31,7 @@ function jcoreRunnerCallEndpoint(script, settings) {
       if (jsonData.output) {
         const shouldScroll =
           output.scrollTop + output.offsetHeight === output.scrollHeight;
-        output.innerHTML += jsonData.output;
+        output.innerHTML += "\n" + jsonData.output;
         if (shouldScroll) {
           output.scrollTop = output.scrollHeight;
         }
