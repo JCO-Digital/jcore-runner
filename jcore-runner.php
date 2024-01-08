@@ -44,7 +44,7 @@ function show_admin_page() {
 	echo '<h2>' . esc_html( apply_filters( 'jcore_runner_title', 'Script Runner' ) ) . '</h2>';
 	echo '<div id="jcore-runner-buttons">';
 	foreach ( \apply_filters( 'jcore_runner_functions', array() ) as $name => $data ) {
-		if ( $data['input'] ) {
+		if ( ! empty($data['input']) ) {
 			foreach ( $data['input'] as $field => $input ) {
 				$type = match ( $input['type'] ) {
 					'number' => 'number',
