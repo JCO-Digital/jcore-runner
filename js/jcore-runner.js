@@ -8,6 +8,7 @@ function jcoreRunnerCallEndpoint(script, settings) {
       clear: false,
       exportFile: "",
       input: {},
+      data: {},
     },
     settings,
   );
@@ -49,7 +50,8 @@ function jcoreRunnerCallEndpoint(script, settings) {
         const settings = {
           page: jsonData.nextPage,
           exportFile: jsonData.exportFile,
-          input: Object.assign(data.input, jsonData.input),
+          input: data.input,
+          data: jsonData.data,
         };
         jcoreRunnerCallEndpoint(script, settings);
       }

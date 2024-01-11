@@ -7,10 +7,6 @@
 
 namespace Jcore\Runner;
 
-use function FluentSmtpLib\GuzzleHttp\json_encode;
-
-require_once ABSPATH . 'wp-admin/includes/file.php';
-
 /**
  * Export data.
  *
@@ -36,12 +32,6 @@ class Export {
 	 */
 	protected array $data = array();
 	/**
-	 * Reference to $wp_filesystem.
-	 *
-	 * @var mixed $fs
-	 */
-	protected mixed $fs;
-	/**
 	 * Static name of folder in uploads.
 	 *
 	 * @var string $dir
@@ -55,18 +45,21 @@ class Export {
 	 * @param string $filename Optional filename to use.
 	 */
 	public function __construct( string $id, string $filename = '' ) {
-		global $wp_filesystem;
-		if ( empty( $wp_filesystem ) ) {
-			WP_Filesystem();
-		}
-		$this->fs = &$wp_filesystem;
-
 		$this->id = $id;
 		if ( empty( $filename ) ) {
 			$filename = $this->id . '-' . gmdate( 'YmdHis' );
 		}
 		$this->filename = $filename;
 		$this->read_file_data();
+	}
+
+	/**
+	 * Check if export has data to export.
+	 *
+	 * @return bool
+	 */
+	public function has_data(): bool {
+		return count( $this->data ) > 0;
 	}
 
 	/**
@@ -85,7 +78,7 @@ class Export {
 	 * @param string $type Type of file extension to return.
 	 * @return string
 	 */
-	public function get_filename( string $type = '' ) {
+	public function get_filename( string $type = '' ): string {
 		return $this->filename . ( empty( $type ) ? '' : '.' . $type );
 	}
 
@@ -109,7 +102,8 @@ class Export {
 		$upload   = wp_upload_dir( null, false );
 		$base_dir = $upload['basedir'] . static::$dir;
 		if ( ! is_dir( $base_dir ) ) {
-			$this->fs->mkdir( $base_dir );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
+			mkdir( $base_dir );
 		}
 		return array(
 			'path' => $base_dir,
@@ -125,7 +119,8 @@ class Export {
 	protected function read_file_data() {
 		$json_filename = $this->get_filepath();
 		if ( file_exists( $json_filename ) ) {
-			$json       = $this->fs->get_contents( $json_filename );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			$json       = file_get_contents( $json_filename );
 			$this->data = json_decode( $json );
 		}
 	}
@@ -136,6 +131,7 @@ class Export {
 	 * @return void
 	 */
 	public function write_file_data() {
-		$this->fs->put_contents( $this->get_filepath(), wp_json_encode( $this->data ) );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		file_put_contents( $this->get_filepath(), wp_json_encode( $this->data ) );
 	}
 }

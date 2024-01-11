@@ -16,7 +16,7 @@ add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
 
 require_once 'utils.php';
 require_once 'rest-runner.php';
-require_once 'export-data.php';
+require_once 'classes/Arguments.php';
 
 /**
  * Adds menu to WP Admin
@@ -44,7 +44,7 @@ function show_admin_page() {
 	echo '<h2>' . esc_html( apply_filters( 'jcore_runner_title', 'Script Runner' ) ) . '</h2>';
 	echo '<div id="jcore-runner-buttons">';
 	foreach ( \apply_filters( 'jcore_runner_functions', array() ) as $name => $data ) {
-		if ( ! empty($data['input']) ) {
+		if ( $data['input'] ) {
 			foreach ( $data['input'] as $field => $input ) {
 				$type = match ( $input['type'] ) {
 					'number' => 'number',
