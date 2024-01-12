@@ -61,7 +61,7 @@ function run_script( $request ) {
 	// Store output in variable, and discard and end the buffer.
 	$output = ob_get_clean();
 
-	if ( false === $return || ! $return->check_status() ) {
+	if ( ! $return instanceof \Jcore\Runner\Arguments || ! $return->check_status() ) {
 		$response->set_status( 400 );
 		$response->set_data( $return );
 	} else {

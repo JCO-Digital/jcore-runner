@@ -4,8 +4,8 @@
   "description": "A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
   "main": "index.js",
   "scripts": {
-    "test": "prettier --check .",
-    "prettier": "prettier --write .",
+    "test": "biome check ./js",
+    "format": "biome check --apply ./js",
     "preversion": "npm test",
     "version": "node versionSync.mjs && git add jcore-runner.php",
     "postversion": "git push && git push --tags"
@@ -20,7 +20,7 @@
     "url": "https://github.com/JCO-Digital/jcore-runner/issues"
   },
   "homepage": "https://github.com/JCO-Digital/jcore-runner#readme",
-  "dependencies": {
-    "prettier": "^3.1.1"
+  "devDependencies": {
+    "@biomejs/biome": "1.5.1"
   }
 }

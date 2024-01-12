@@ -16,7 +16,7 @@ add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
 
 require_once 'utils.php';
 require_once 'rest-runner.php';
-require_once 'classes/Arguments.php';
+require_once 'classes/class-arguments.php';
 
 /**
  * Adds menu to WP Admin
