@@ -96,3 +96,26 @@ function join_path( string $path, string ...$parts ): string {
 
 	return $path;
 }
+
+/**
+ * Get script data from _GET vairable.
+ *
+ * @param string $name The name of the _GET variable.
+ * @return false|array
+ */
+function get_script_from_url( string $name = 'script' ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( empty( $_GET[ $name ] ) ) {
+		return false;
+	}
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$script  = sanitize_text_field( wp_unslash( $_GET[ $name ] ) );
+	$scripts = \apply_filters( 'jcore_runner_functions', array() );
+	if ( empty( $scripts[ $script ] ) ) {
+		return false;
+	}
+	return array(
+		'id' => $script,
+		...$scripts[ $script ],
+	);
+}
