@@ -12,6 +12,8 @@
 
 namespace Jcore\Runner;
 
+register_deactivation_hook( __FILE__, '\Jcore\Runner\cron_deactivate' );
+
 add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
 
 require_once 'utils.php';

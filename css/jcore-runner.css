@@ -62,3 +62,9 @@
   min-height: 23px;
   width: 98%;
 }
+
+a.back {
+  & svg {
+    width: 32px;
+  }
+}

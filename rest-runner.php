@@ -54,12 +54,19 @@ function run_script( $request ) {
 		return $response;
 	}
 
+	$logname = gmdate( 'Y-m-d' ) . '-' . $json['script'];
+	$log     = new File( $logname, 'logs', 'log' );
 	// Capture output from function by starting output buffer.
 	ob_start();
 	// Execute function, passing the json body to it.
 	$return = call_user_func( $callback, new Arguments( $json ) );
 	// Store output in variable, and discard and end the buffer.
 	$output = ob_get_clean();
+	if ( $request['clear'] ) {
+		// Add timestamp to first run.
+		$log->append_file_data( "\n----- " . gmdate( 'H:i:s' ) . " -----\n" );
+	}
+	$log->append_file_data( $output );
 
 	if ( ! $return instanceof \Jcore\Runner\Arguments || ! $return->check_status() ) {
 		$response->set_status( 400 );
