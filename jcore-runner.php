@@ -48,12 +48,10 @@ function show_admin_page() {
 	$schedule = get_script_from_url( 'schedule' );
 
 	if ( $schedule ) {
-		$hook = RunnerTable::get_hook_name( $schedule['id'] );
-		unschedule_action( $hook );
-		if ( ! wp_next_scheduled( $hook ) ) {
-			wp_schedule_event( time(), 'every_minute', $hook );
-		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : 'hourly';
 
+		schedule_action( $schedule['id'], $action );
 		$location = add_query_arg(
 			array(
 				'page' => 'jcore-runner',

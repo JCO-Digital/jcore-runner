@@ -119,3 +119,13 @@ function get_script_from_url( string $name = 'script' ) {
 		...$scripts[ $script ],
 	);
 }
+
+/**
+ * Returns name of cron hook.
+ *
+ * @param string $script Name of script.
+ * @return string
+ */
+function get_hook_name( string $script ) {
+	return 'jcore_' . $script . '_cron_hook';
+}

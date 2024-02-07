@@ -92,7 +92,7 @@ class RunnerTable extends WP_List_Table {
 			);
 		} elseif ( 'cron' === $column_name ) {
 			// Cron Column.
-			$hook = $this->get_hook_name( $item['id'] );
+			$hook = get_hook_name( $item['id'] );
 			$next = wp_next_scheduled( $hook );
 			if ( false === $next ) {
 				$content = __( 'Not scheduled' );
@@ -146,15 +146,5 @@ class RunnerTable extends WP_List_Table {
 		);
 		$scripts     = array_slice( $scripts, $offset, $per_page );
 		$this->items = $scripts;
-	}
-
-	/**
-	 * Returns name of cron hook.
-	 *
-	 * @param string $script Name of script.
-	 * @return string
-	 */
-	public static function get_hook_name( string $script ) {
-		return 'jcore_' . $script . '_cron_hook';
 	}
 }

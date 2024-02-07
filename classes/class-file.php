@@ -45,6 +45,7 @@ class File {
 	 *
 	 * @param string $filename Name of file.
 	 * @param string $section Section that file should be placed in.
+	 * @param string $extension File extension.
 	 * @return void
 	 */
 	public function __construct( string $filename, string $section = '', $extension = 'json' ) {
@@ -102,16 +103,17 @@ class File {
 	/**
 	 * Read file content from temporary file.
 	 *
-	 * @return object
+	 * @param mixed $default_value Default value to return.
+	 * @return array
 	 */
-	public function read_file_data() {
+	public function read_file_data( mixed $default_value = array() ) {
 		$json_filename = $this->get_filepath();
 		if ( file_exists( $json_filename ) ) {
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 			$json = file_get_contents( $json_filename );
-			return json_decode( $json );
+			return json_decode( $json, true );
 		}
-		return array();
+		return $default_value;
 	}
 
 	/**

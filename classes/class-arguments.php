@@ -121,7 +121,7 @@ class Arguments {
 	 * @param string $output The captured buffer output to include.
 	 * @return array
 	 */
-	public function return_data( string $output ) {
+	public function return_data( string $output = '' ) {
 		$return = array(
 			'status' => $this->status,
 			'output' => wp_strip_all_tags( $output ),
@@ -133,12 +133,21 @@ class Arguments {
 		if ( ! empty( $this->data ) ) {
 			$return['data'] = $this->data;
 		}
+		$return['exportFile'] = $this->write_export();
+		return $return;
+	}
+
+	/**
+	 * Write export file, and return filename.
+	 *
+	 * @return string
+	 */
+	public function write_export() {
 		if ( $this->export->has_data() ) {
 			// Function exports data.
 			$this->export->write_file_data();
-			$return['exportFile'] = $this->export->get_filename();
+			return $this->export->get_filename();
 		}
-
-		return $return;
+		return '';
 	}
 }
