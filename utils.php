@@ -124,8 +124,55 @@ function get_script_from_url( string $name = 'script' ) {
  * Returns name of cron hook.
  *
  * @param string $script Name of script.
+ * @param bool   $runner Return the manager hook or the runner hook.
  * @return string
  */
-function get_hook_name( string $script ) {
-	return 'jcore_' . $script . '_cron_hook';
+function get_hook_name( string $script, $runner = false ) {
+	return sprintf( 'jcore_%s_cron_%s', $script, $runner ? 'runner' : 'manager' );
+}
+
+/**
+ * Wrapper around update_option to automatically keep namespace.
+ *
+ * @param string $scope Internal namespace, for example the script name.
+ * @param string $name Name of the setting.
+ * @param mixed  $value Value being set.
+ * @return bool
+ */
+function set_setting( string $scope, string $name, mixed $value ) {
+	return update_option( get_option_name( $scope, $name ), $value );
+}
+
+/**
+ * Wrapper around get_option to automatically keep namespace.
+ *
+ * @param string $scope Internal namespace, for example the script name.
+ * @param string $name Name of the setting.
+ * @param mixed  $default_value Value to return if option not set.
+ * @return mixed
+ */
+function get_setting( string $scope, string $name, mixed $default_value ) {
+	return get_option( get_option_name( $scope, $name ), $default_value );
+}
+
+/**
+ * Wrapper around delete_option to automatically keep namespace.
+ *
+ * @param string $scope Internal namespace, for example the script name.
+ * @param string $name Name of the setting.
+ * @return bool
+ */
+function delete_setting( string $scope, string $name ) {
+	return delete_option( get_option_name( $scope, $name ) );
+}
+
+/**
+ * Generate the namespace.
+ *
+ * @param string $scope Internal namespace, for example the script name.
+ * @param string $name Name of the setting.
+ * @return string
+ */
+function get_option_name( string $scope, string $name ) {
+	return sprintf( 'jcore_runner_%s_%s', $scope, $name );
 }

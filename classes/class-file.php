@@ -54,25 +54,29 @@ class File {
 		$this->section   = $section;
 	}
 
-
 	/**
 	 * Returns the work directory for the export files.
 	 *
+	 * @param string $section The file section (folder).
+	 * @param string $filename Optional filename.
 	 * @return string[] Array containing path and url.
 	 */
-	public function get_upload_dir() {
+	public static function get_upload_dir( $section, $filename = '' ) {
 		$upload = wp_upload_dir( null, false );
 		$dir    = static::$dir;
 		if ( ! is_dir( $upload['basedir'] . $dir ) ) {
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
 			mkdir( $upload['basedir'] . $dir );
 		}
-		if ( ! empty( $this->section ) ) {
-			$dir .= '/' . $this->section;
+		if ( ! empty( $section ) ) {
+			$dir .= '/' . $section;
 			if ( ! is_dir( $upload['basedir'] . $dir ) ) {
 				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
 				mkdir( $upload['basedir'] . $dir );
 			}
+		}
+		if ( ! empty( $filename ) ) {
+			$dir .= '/' . $filename;
 		}
 
 		return array(
@@ -87,17 +91,49 @@ class File {
 	 * @return string The absolute path of the file.
 	 */
 	public function get_filepath() {
-		$upload = static::get_upload_dir();
-		return $upload['path'] . '/' . $this->filename . '.' . $this->extension;
+		$upload = static::get_upload_dir( $this->section, $this->filename . '.' . $this->extension );
+		return $upload['path'];
+	}
+
+	/**
+	 * Get a list of files from a section.
+	 *
+	 * @param string $section The section to list.
+	 * @param string $name partial file name to match.
+	 * @param int    $number Max number of files.
+	 * @return array
+	 */
+	public static function get_files( string $section, string $name = '', int $number = 5 ) {
+		$upload = static::get_upload_dir( $section );
+		$files  = scandir( $upload['path'] );
+		rsort( $files );
+		$result = array();
+		foreach ( $files as $file ) {
+			if ( '.' !== substr( $file, 0, 1 ) && false !== strpos( $file, $name ) ) {
+				$result[] = array(
+					'name' => $file,
+					'path' => $upload['path'] . '/' . $file,
+					'url'  => $upload['url'] . '/' . $file,
+				);
+				if ( --$number <= 0 ) {
+					break;
+				}
+			}
+		}
+		return $result;
 	}
 
 	/**
 	 * Get the filename of the export file.
 	 *
+	 * @param bool $extension Whether to include extension or not.
 	 * @return string
 	 */
-	public function get_filename(): string {
-		return $this->filename . '.' . $this->extension;
+	public function get_filename( $extension = true ): string {
+		if ( $extension ) {
+			return $this->filename . '.' . $this->extension;
+		}
+		return $this->filename;
 	}
 
 	/**

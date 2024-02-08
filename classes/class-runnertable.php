@@ -100,7 +100,7 @@ class RunnerTable extends WP_List_Table {
 				$content = $next - time();
 			}
 			$actions = array(
-				'schedule' => sprintf(
+				'hourly' => sprintf(
 					'<a href="%s">%s</a>',
 					add_query_arg(
 						array(
@@ -110,9 +110,49 @@ class RunnerTable extends WP_List_Table {
 						),
 						admin_url( 'admin.php' )
 					),
-					__( 'Schedule' )
+					__( 'Hourly' )
+				),
+				'daily'  => sprintf(
+					'<a href="%s">%s</a>',
+					add_query_arg(
+						array(
+							'page'     => 'jcore-runner',
+							'schedule' => esc_attr( $item['id'] ),
+							'action'   => 'daily',
+						),
+						admin_url( 'admin.php' )
+					),
+					__( 'Daily' )
+				),
+				'weekly' => sprintf(
+					'<a href="%s">%s</a>',
+					add_query_arg(
+						array(
+							'page'     => 'jcore-runner',
+							'schedule' => esc_attr( $item['id'] ),
+							'action'   => 'weekly',
+						),
+						admin_url( 'admin.php' )
+					),
+					__( 'Weekly' )
 				),
 			);
+		} elseif ( 'log' === $column_name ) {
+			foreach ( File::get_files( 'logs', $item['id'] . '.log', 2 ) as $file ) {
+				$content .= sprintf(
+					'<a href="%s">%s</a><br/>',
+					$file['url'],
+					$file['name'],
+				);
+			}
+		} elseif ( 'export' === $column_name ) {
+			foreach ( File::get_files( 'export', $item['id'] . '-', 2 ) as $file ) {
+				$content .= sprintf(
+					'<a href="%s">%s</a><br/>',
+					$file['url'],
+					$file['name'],
+				);
+			}
 		}
 
 		return $content . $this->row_actions( $actions );

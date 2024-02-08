@@ -74,7 +74,7 @@ class Export {
 	 * @return string
 	 */
 	public function get_filename(): string {
-		return $this->file->get_filename();
+		return $this->file->get_filename( false );
 	}
 
 	/**
