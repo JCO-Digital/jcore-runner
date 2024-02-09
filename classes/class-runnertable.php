@@ -44,10 +44,10 @@ class RunnerTable extends WP_List_Table {
 	 */
 	public function get_columns(): array {
 		return array(
-			'name'   => __( 'Name' ),
-			'cron'   => __( 'Cron' ),
-			'log'    => __( 'Logs' ),
-			'export' => __( 'Export' ),
+			'name'   => __( 'Name', 'jcore-runner' ),
+			'cron'   => __( 'Cron', 'jcore-runner' ),
+			'log'    => __( 'Logs', 'jcore-runner' ),
+			'export' => __( 'Exports', 'jcore-runner' ),
 		);
 	}
 
@@ -77,66 +77,76 @@ class RunnerTable extends WP_List_Table {
 				),
 				$item['title']
 			);
-			$actions = array(
-				'edit' => sprintf(
-					'<a href="%s">%s</a>',
-					add_query_arg(
-						array(
-							'page' => 'jcore-runner',
-							'edit' => esc_attr( $item['id'] ),
-						),
-						admin_url( 'admin.php' )
-					),
-					'Edit'
-				),
-			);
 		} elseif ( 'cron' === $column_name ) {
 			// Cron Column.
-			$hook = get_hook_name( $item['id'] );
-			$next = wp_next_scheduled( $hook );
+			$next = wp_next_scheduled( get_hook_name( $item['id'] ) );
 			if ( false === $next ) {
-				$content = __( 'Not scheduled' );
+				$content = __( 'Not scheduled', 'jcore-runner' );
+				$actions = array(
+					'hourly' => sprintf(
+						'<a href="%s">%s</a>',
+						add_query_arg(
+							array(
+								'page'     => 'jcore-runner',
+								'schedule' => esc_attr( $item['id'] ),
+								'action'   => 'hourly',
+							),
+							admin_url( 'admin.php' )
+						),
+						__( 'Hourly', 'jcore-runner' )
+					),
+					'daily'  => sprintf(
+						'<a href="%s">%s</a>',
+						add_query_arg(
+							array(
+								'page'     => 'jcore-runner',
+								'schedule' => esc_attr( $item['id'] ),
+								'action'   => 'daily',
+							),
+							admin_url( 'admin.php' )
+						),
+						__( 'Daily', 'jcore-runner' )
+					),
+					'weekly' => sprintf(
+						'<a href="%s">%s</a>',
+						add_query_arg(
+							array(
+								'page'     => 'jcore-runner',
+								'schedule' => esc_attr( $item['id'] ),
+								'action'   => 'weekly',
+							),
+							admin_url( 'admin.php' )
+						),
+						__( 'Weekly', 'jcore-runner' )
+					),
+				);
+
 			} else {
-				$content = $next - time();
+				$time = wp_date( get_option( 'time_format' ), $next );
+				if ( wp_date( get_option( 'date_format' ), $next ) !== wp_date( get_option( 'date_format' ) ) ) {
+					$time .= ' ' . wp_date( get_option( 'date_format' ), $next );
+				}
+				// translators: Time and possible date.
+				$content = sprintf( __( 'Next Scheduled Run: %s', 'jcore-runner' ), $time );
+				if ( wp_next_scheduled( get_hook_name( $item['id'], true ) ) ) {
+					$content .= ' (' . __( 'In progress', 'jcore-runner' ) . ')';
+				}
+
+				$actions = array(
+					'unschedule' => sprintf(
+						'<a href="%s">%s</a>',
+						add_query_arg(
+							array(
+								'page'     => 'jcore-runner',
+								'schedule' => esc_attr( $item['id'] ),
+								'action'   => 'unschedule',
+							),
+							admin_url( 'admin.php' )
+						),
+						__( 'Unschedule', 'jcore-runner' )
+					),
+				);
 			}
-			$actions = array(
-				'hourly' => sprintf(
-					'<a href="%s">%s</a>',
-					add_query_arg(
-						array(
-							'page'     => 'jcore-runner',
-							'schedule' => esc_attr( $item['id'] ),
-							'action'   => 'hourly',
-						),
-						admin_url( 'admin.php' )
-					),
-					__( 'Hourly' )
-				),
-				'daily'  => sprintf(
-					'<a href="%s">%s</a>',
-					add_query_arg(
-						array(
-							'page'     => 'jcore-runner',
-							'schedule' => esc_attr( $item['id'] ),
-							'action'   => 'daily',
-						),
-						admin_url( 'admin.php' )
-					),
-					__( 'Daily' )
-				),
-				'weekly' => sprintf(
-					'<a href="%s">%s</a>',
-					add_query_arg(
-						array(
-							'page'     => 'jcore-runner',
-							'schedule' => esc_attr( $item['id'] ),
-							'action'   => 'weekly',
-						),
-						admin_url( 'admin.php' )
-					),
-					__( 'Weekly' )
-				),
-			);
 		} elseif ( 'log' === $column_name ) {
 			foreach ( File::get_files( 'logs', $item['id'] . '.log', 2 ) as $file ) {
 				$content .= sprintf(

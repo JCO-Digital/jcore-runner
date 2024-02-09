@@ -66,13 +66,12 @@ function unschedule_action( $hook ) {
  * @return void
  */
 function schedule_action( string $script, string $action ) {
-	if ( ! in_array( $action, array( 'hourly', 'daily', 'weekly' ), true ) ) {
+	if ( ! in_array( $action, array( 'hourly', 'daily', 'weekly', 'unschedule' ), true ) ) {
 		return;
 	}
-
 	$hook = get_hook_name( $script );
 	unschedule_action( $hook );
-	if ( ! wp_next_scheduled( $hook ) ) {
+	if ( ! wp_next_scheduled( $hook ) && 'unschedule' !== $action ) {
 		wp_schedule_event( time(), $action, $hook );
 	}
 }

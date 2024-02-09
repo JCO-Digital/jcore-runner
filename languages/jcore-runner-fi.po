@@ -1,0 +1,84 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: JCORE Script Runner\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-09 09:34+0000\n"
+"PO-Revision-Date: 2024-02-09 09:46+0000\n"
+"Last-Translator: Juha\n"
+"Language-Team: Suomi\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.6; wp-6.4.3\n"
+"X-Domain: jcore-runner"
+
+#. Description of the plugin
+msgid ""
+"A WordPress plugin to easily allow manual running of scripts for maintenance "
+"and utility."
+msgstr ""
+
+#: classes/class-runnertable.php:48
+msgid "Cron"
+msgstr ""
+
+#: classes/class-runnertable.php:108
+msgid "Daily"
+msgstr "Päivittäin"
+
+#: classes/class-runnertable.php:50
+msgid "Exports"
+msgstr "Vientitiedostot"
+
+#: classes/class-runnertable.php:96
+msgid "Hourly"
+msgstr "Tunneittain"
+
+#. Author URI of the plugin
+msgid "http://jco.fi"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/JCO-Digital/jcore-runner#readme"
+msgstr ""
+
+#: classes/class-runnertable.php:132
+msgid "In progress"
+msgstr "Käynnissä"
+
+#. Author of the plugin
+msgid "JCO Digital"
+msgstr ""
+
+#. Name of the plugin
+msgid "JCORE Script Runner"
+msgstr ""
+
+#: classes/class-runnertable.php:49
+msgid "Logs"
+msgstr "Lokit"
+
+#: classes/class-runnertable.php:47
+msgid "Name"
+msgstr "Nimi"
+
+#. Time and possible date.
+#: classes/class-runnertable.php:130
+#, php-format
+msgid "Next Scheduled Run: %s"
+msgstr "Seuraava ajastettu ajo: %s"
+
+#: classes/class-runnertable.php:84
+msgid "Not scheduled"
+msgstr "Ei ajastettu"
+
+#: classes/class-runnertable.php:146
+msgid "Unschedule"
+msgstr "Poista ajastus"
+
+#: classes/class-runnertable.php:120
+msgid "Weekly"
+msgstr "Viikoittain"

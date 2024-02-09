@@ -1,4 +1,9 @@
 <?php
+/**
+ * Utility functions.
+ *
+ * @package Jcore\Runner
+ */
 
 namespace Jcore\Runner;
 

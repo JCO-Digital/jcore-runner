@@ -8,6 +8,10 @@ node_modules/
 dist/
 vendor/
 
+# Backup files
+*~
+*.bak
+
 # Compiled Java class files
 *.class
 

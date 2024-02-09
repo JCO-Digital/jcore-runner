@@ -6,6 +6,8 @@
  * Author: JCO Digital
  * Version: 2.0.1
  * Author URI: http://jco.fi
+ * Text Domain: jcore-runner
+ * Domain Path: /languages
  *
  * @package Jcore\Runner
  */
@@ -15,6 +17,7 @@ namespace Jcore\Runner;
 register_deactivation_hook( __FILE__, '\Jcore\Runner\cron_deactivate' );
 
 add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
+add_action( 'init', '\Jcore\Runner\load_textdomain' );
 
 require_once 'utils.php';
 require_once 'cron.php';
@@ -22,6 +25,15 @@ require_once 'rest-runner.php';
 require_once 'classes/class-arguments.php';
 require_once 'classes/class-runnertable.php';
 require_once 'ui.php';
+
+/**
+ * Load translations.
+ *
+ * @return void
+ */
+function load_textdomain() {
+	load_plugin_textdomain( 'jcore-runner', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
 
 /**
  * Adds menu to WP Admin
