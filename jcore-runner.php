@@ -84,3 +84,18 @@ function show_admin_page() {
 		render_script_page( $script );
 	}
 }
+
+// Handles setting the title to be the script name to better see which is which when multiple runners are open.
+add_filter(
+	'admin_title',
+	static function( $admin_title, $title ) {
+		$script = get_script_from_url( 'script' );
+		if ( ! $script ) {
+			return $admin_title;
+		}
+		// translators: %1$s: Script name, %2$s: Original title.
+		return sprintf( __( '%1$s &#8212; %2$s', 'jcore-runner' ), $script['title'], $title );
+	},
+	10,
+	2
+);
