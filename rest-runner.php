@@ -7,6 +7,10 @@
 
 namespace Jcore\Runner;
 
+// Disable Warnings in rest API because why would you ever want that?
+// phpcs:ignore
+error_reporting( E_ERROR | E_PARSE );
+
 use WP_REST_Response;
 
 add_action( 'rest_api_init', 'Jcore\Runner\add_endpoints' );
