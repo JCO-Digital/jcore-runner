@@ -68,3 +68,15 @@ a.back {
     width: 32px;
   }
 }
+
+#jcore-runner-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.jcore-input-label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

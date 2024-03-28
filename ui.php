@@ -7,6 +7,61 @@
 
 namespace Jcore\Runner;
 
+
+/**
+ * Checks if file exists and includes it with the variables.
+ *
+ * @param string $filename
+ * @param array $variables
+ * @param bool $echo
+ *
+ * @return void|bool|string
+ */
+function include_template( string $filename, array $variables, bool $echo = true ) {
+	extract( $variables );
+	if ( file_exists( $filename ) ) {
+		if ( $echo ) {
+			include($filename);
+		} else {
+			ob_start();
+			include $filename;
+			return ob_get_clean();
+		}
+	}
+}
+
+/**
+ * Add all scripts needed to be registered here, depending on the type of input.
+ *
+ * @param mixed $type
+ *
+ * @return void
+ */
+function register_input_scripts( mixed $type ): void {
+	switch ( $type ) {
+		case 'select':
+			wp_enqueue_script(
+				'select2',
+				'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js',
+				array( 'jquery' ),
+				'4.0.13',
+				false
+			);
+			wp_enqueue_style(
+				'select2',
+				'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css',
+				array(),
+				'4.0.13',
+			);
+			break;
+		case 'date':
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_register_style( 'jquery-ui', 'https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css', array(), '1.13.2' );
+			wp_enqueue_style( 'jquery-ui' );
+			break;
+	}
+}
+
 /**
  * Render the script runner view.
  *
@@ -17,6 +72,12 @@ namespace Jcore\Runner;
 function render_script_page( array $params ) {
 	script_register( 'jcore_runner', '/js/jcore-runner.js', array( 'wp-api-request' ) );
 	wp_enqueue_script( 'jcore_runner' );
+
+	if (! empty( $params['input'] ) ) {
+		foreach ( $params['input'] as $field => $input ) {
+			register_input_scripts( $input['type'] );
+		}
+	}
 
 	printf(
 		'<a class="back" href="%s">%s</a>',
@@ -37,10 +98,13 @@ function render_script_page( array $params ) {
 	if ( ! empty( $params['input'] ) ) {
 		foreach ( $params['input'] as $field => $input ) {
 			$type = match ( $input['type'] ) {
-				'number' => 'number',
-				default => 'text',
+				'date'   => 'date',
+				'select' => 'select',
+				default => 'generic',
 			};
-			echo esc_html( $input['title'] ) . ': <input type="' . esc_html( $type ) . '" data-jcore-input="' . esc_html( $params['id'] ) . '" name="' . esc_html( $field ) . '" value="' . esc_html( $input['default'] ) . '" />';
+			$type = sanitize_file_name( $type );
+			$filename = __DIR__ . '/ui/inputs/' . $type . '.php';
+			include_template( $filename, array( 'params' => $params, 'field' => $field, 'input' => $input ) );
 		}
 	}
 	echo '</div>';
