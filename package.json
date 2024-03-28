@@ -1,6 +1,6 @@
 {
   "name": "jcore-runner",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
   "main": "index.js",
   "scripts": {
