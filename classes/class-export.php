@@ -39,13 +39,14 @@ class Export {
 	 *
 	 * @param string $id Base name of the export file.
 	 * @param string $filename Optional filename to use.
+	 * @param string $extension Optional file extension.
 	 */
-	public function __construct( string $id, string $filename = '' ) {
+	public function __construct( string $id, string $filename = '', string $extension = 'json' ) {
 		$this->id = $id;
 		if ( empty( $filename ) ) {
 			$filename = $this->id . '-' . gmdate( 'YmdHis' );
 		}
-		$this->file = new File( $filename, 'export' );
+		$this->file = new File( $filename, 'export', $extension );
 		$this->data = $this->file->read_file_data();
 	}
 
@@ -64,8 +65,12 @@ class Export {
 	 * @param array $row Array of values to insert into data.
 	 * @return void
 	 */
-	public function add_row( array $row ) {
-		array_push( $this->data, $row );
+	public function add_row( array $row, int $index = -1 ) {
+		if ( $index >= 0 ) {
+			array_splice( $this->data, $index, 0, $row );
+		} else {
+			$this->data[] = $row;
+		}
 	}
 
 	/**
@@ -75,6 +80,27 @@ class Export {
 	 */
 	public function get_filename(): string {
 		return $this->file->get_filename( false );
+	}
+
+	/**
+	 * Returns the file extension.
+	 *
+	 * @return string
+	 */
+	public function get_extension(): string {
+		return $this->file->get_extension();
+	}
+
+	/**
+	 * Sets the file extension. (and the format)
+	 *
+	 * @param string $extension File extension (json, csv).
+	 *
+	 * @return void
+	 */
+	public function set_extension( string $extension ): void {
+		$this->file->set_extension( $extension );
+		$this->write_file_data( $extension );
 	}
 
 	/**

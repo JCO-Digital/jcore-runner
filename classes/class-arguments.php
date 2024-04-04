@@ -90,7 +90,7 @@ class Arguments {
 		}
 
 		$export_file  = $json['exportFile'] ?? '';
-		$this->export = new Export( $this->script, $export_file );
+		$this->export = new Export( $this->script, $export_file, $json['exportFileExtension'] ?? 'json' );
 	}
 
 	/**
@@ -133,7 +133,8 @@ class Arguments {
 		if ( ! empty( $this->data ) ) {
 			$return['data'] = $this->data;
 		}
-		$return['exportFile'] = $this->write_export();
+		$return['exportFile']          = $this->write_export();
+		$return['exportFileExtension'] = $this->export->get_extension();
 		return $return;
 	}
 

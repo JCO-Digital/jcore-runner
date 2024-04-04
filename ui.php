@@ -7,13 +7,12 @@
 
 namespace Jcore\Runner;
 
-
 /**
  * Checks if file exists and includes it with the variables.
  *
  * @param string $filename
- * @param array $variables
- * @param bool $echo
+ * @param array  $variables
+ * @param bool   $echo
  *
  * @return void|bool|string
  */
@@ -21,7 +20,7 @@ function include_template( string $filename, array $variables, bool $echo = true
 	extract( $variables );
 	if ( file_exists( $filename ) ) {
 		if ( $echo ) {
-			include($filename);
+			include $filename;
 		} else {
 			ob_start();
 			include $filename;
@@ -72,8 +71,14 @@ function register_input_scripts( mixed $type ): void {
 function render_script_page( array $params ) {
 	script_register( 'jcore_runner', '/js/jcore-runner.js', array( 'wp-api-request' ) );
 	wp_enqueue_script( 'jcore_runner' );
+	$export_dir = File::get_upload_dir( 'export' )['url'];
+	wp_add_inline_script(
+		'jcore_runner',
+		'const jcore_export_url = "' . esc_js( trailingslashit( $export_dir ) ) . '";',
+		'before'
+	);
 
-	if (! empty( $params['input'] ) ) {
+	if ( ! empty( $params['input'] ) ) {
 		foreach ( $params['input'] as $field => $input ) {
 			register_input_scripts( $input['type'] );
 		}
@@ -102,9 +107,16 @@ function render_script_page( array $params ) {
 				'select' => 'select',
 				default => 'generic',
 			};
-			$type = sanitize_file_name( $type );
+			$type     = sanitize_file_name( $type );
 			$filename = __DIR__ . '/ui/inputs/' . $type . '.php';
-			include_template( $filename, array( 'params' => $params, 'field' => $field, 'input' => $input ) );
+			include_template(
+				$filename,
+				array(
+					'params' => $params,
+					'field'  => $field,
+					'input'  => $input,
+				)
+			);
 		}
 	}
 	echo '</div>';

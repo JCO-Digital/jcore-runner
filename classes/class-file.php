@@ -48,7 +48,7 @@ class File {
 	 * @param string $extension File extension.
 	 * @return void
 	 */
-	public function __construct( string $filename, string $section = '', $extension = 'json' ) {
+	public function __construct( string $filename, string $section = '', string $extension = 'json' ) {
 		$this->filename  = $filename;
 		$this->extension = $extension;
 		$this->section   = $section;
@@ -137,30 +137,84 @@ class File {
 	}
 
 	/**
+	 * Get the file extension.
+	 *
+	 * @return string
+	 */
+	public function get_extension(): string {
+		return $this->extension;
+	}
+
+	/**
 	 * Read file content from temporary file.
 	 *
 	 * @param mixed $default_value Default value to return.
 	 * @return array
 	 */
 	public function read_file_data( mixed $default_value = array() ) {
+		// phpcs:disable WordPress.WP.AlternativeFunctions
 		$json_filename = $this->get_filepath();
 		if ( file_exists( $json_filename ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			switch ( $this->extension ) {
+				case 'json':
+					$json = file_get_contents( $json_filename );
+					return json_decode( $json, true );
+				case 'csv':
+					$data = array();
+					$file = fopen( $json_filename, 'rb' );
+					// phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
+					while ( ( $row = fgetcsv( $file, null, '|' ) ) !== false ) {
+						$data[] = $row;
+					}
+					fclose( $file );
+					return $data;
+			}
 			$json = file_get_contents( $json_filename );
 			return json_decode( $json, true );
 		}
 		return $default_value;
+		// phpcs:enable WordPress.WP.AlternativeFunctions
 	}
 
 	/**
 	 * Write data to file.
 	 *
 	 * @param array $data Data to write to file.
+	 *
 	 * @return void
 	 */
-	public function write_file_data( $data ) {
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-		file_put_contents( $this->get_filepath(), wp_json_encode( $data ) );
+	public function write_file_data( mixed $data ) {
+		// phpcs:disable WordPress.WP.AlternativeFunctions
+		switch ( $this->extension ) {
+			default:
+			case 'json':
+				file_put_contents( $this->get_filepath(), wp_json_encode( $data ) );
+				break;
+			case 'csv':
+				$file = fopen( $this->get_filepath(), 'wb' );
+				foreach ( $data as $row ) {
+					if ( is_array( $row ) ) {
+							$row = array_values(
+								array_map(
+									static function ( $value ) {
+										if ( is_array( $value ) ) {
+											if ( is_array( $value[0] ) ) {
+												$value = array_merge( ...$value );
+											}
+											return implode( ',', $value );
+										}
+										return $value;
+									},
+									$row
+								)
+							);
+					}
+					fputcsv( $file, $row, '|' );
+				}
+				fclose( $file );
+				break;
+		}
+		// phpcs:enable WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 	}
 
 	/**
@@ -175,5 +229,16 @@ class File {
 		fwrite( $file, $data );
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 		fclose( $file );
+	}
+
+	/**
+	 * Sets the file extension.
+	 *
+	 * @param string $extension File extension (json, csv).
+	 *
+	 * @return void
+	 */
+	public function set_extension( string $extension ): void {
+		$this->extension = $extension;
 	}
 }
