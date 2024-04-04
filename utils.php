@@ -119,9 +119,11 @@ function get_script_from_url( string $name = 'script' ) {
 	if ( empty( $scripts[ $script ] ) ) {
 		return false;
 	}
-	return array(
-		'id' => $script,
-		...$scripts[ $script ],
+	return array_merge(
+		array(
+			'id' => $script,
+		),
+		$scripts[ $script ],
 	);
 }
 
