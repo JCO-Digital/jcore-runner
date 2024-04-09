@@ -65,7 +65,7 @@ function jcoreRunnerCallEndpoint(script, settings) {
 				}`;
 				a.id = "jcore-runner-export-download";
 				a.href = url;
-				a.download = url;
+				a.download = "";
 				a.textContent = "Download export";
 				const container = document.getElementById("jcore-runner-return");
 				if (container) {
