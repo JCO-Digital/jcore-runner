@@ -1,7 +1,6 @@
 <label class="jcore-input-label">
   <?php echo esc_html( $input['title'] ) ?>
   <input
-    style="width: fit-content;"
     type="<?php echo esc_html( $input['type'] ) ?>"
     data-jcore-input="<?php echo esc_html( $params['id'] ) ?>"
     name="<?php echo esc_html( $field ) ?>"
