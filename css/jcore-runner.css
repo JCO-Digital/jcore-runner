@@ -16,10 +16,12 @@
   0% {
     transform: translate3d(-50%, -50%, 0) rotate(0deg);
   }
+
   100% {
     transform: translate3d(-50%, -50%, 0) rotate(360deg);
   }
 }
+
 #jcore-runner-spinner::before {
   animation: 1.5s linear infinite jcore-runner-spinner;
   animation-play-state: inherit;
@@ -57,7 +59,7 @@
   }
 }
 
-#jcore-runner-return > div {
+#jcore-runner-return>div {
   background-color: #bdc5c9;
   min-height: 23px;
   width: 98%;
@@ -83,10 +85,15 @@ a.back {
   width: fit-content;
 }
 
-.jcore-input-label > input,
-.jcore-input-label > select {
+.jcore-input-label>input,
+.jcore-input-label>select {
   width: fit-content;
   min-width: 150px;
+}
+
+.jcore-input-label>input[type="checkbox"],
+.jcore-input-label>input[type="radio"] {
+  min-width: unset;
 }
 
 #jcore-runner-export-download {
