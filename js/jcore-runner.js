@@ -107,6 +107,13 @@ window.addEventListener("DOMContentLoaded", () => {
 						.map((option) => option.value);
 					continue;
 				}
+				if (
+					field.tagName === "input" &&
+					["checkbox", "radio"].includes(field.type)
+				) {
+					input[field.name] = field.checked;
+					continue;
+				}
 				input[field.name] = field.value;
 			}
 			jcoreRunnerCallEndpoint(element.dataset.jcoreScript, {
