@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
 					continue;
 				}
 				if (
-					field.tagName === "input" &&
+					field.tagName === "INPUT" &&
 					["checkbox", "radio"].includes(field.type)
 				) {
 					input[field.name] = field.checked;
