@@ -94,6 +94,7 @@ a.back {
 .jcore-input-label>input[type="checkbox"],
 .jcore-input-label>input[type="radio"] {
   min-width: unset;
+  width: 1rem;
 }
 
 #jcore-runner-export-download {
