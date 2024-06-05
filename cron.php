@@ -127,7 +127,7 @@ function cron_manager( string $script ) {
 	$runner = get_hook_name( $script, true );
 	unschedule_action( $runner );
 	if ( ! wp_next_scheduled( $runner ) ) {
-		wp_schedule_event( time(), 'every_minute', $runner, array( $script ) );
+		wp_schedule_single_event( time(), $runner, array( $script ) );
 	}
 }
 
@@ -142,11 +142,14 @@ function cron_runner( string $script ) {
 	if ( false === $options ) {
 		return;
 	}
-
+	$runner = get_hook_name( $script, true );
+	// Unschedule any extra runners in case of overlap.
+	if ( wp_next_scheduled( $runner ) ) {
+		unschedule_action( $runner );
+	}
+	
 	$arguments = get_setting( $script, 'arguments', array() );
-
 	if ( empty( $arguments ) ) {
-		unschedule_action( get_hook_name( $script, true ) );
 		return;
 	}
 	// Create log file handle.
@@ -169,16 +172,20 @@ function cron_runner( string $script ) {
 		// Fail.
 		$log->append_file_data( 'Script failed' );
 		delete_setting( $script, 'arguments' );
+		return;
 	} else {
 		$arguments['exportFile'] = $return->write_export();
-		if ( empty( $return->next_page ) ) {
-			$arguments = array();
-		} else {
+		if ( ! empty( $return->next_page ) ) {
+			// Next page is defined.
 			$arguments['page'] = $return->next_page;
 			$arguments['data'] = $return->data;
+			wp_schedule_single_event( time(), $runner, array( $script ) );
+			set_setting( $script, 'arguments', $arguments );
+		} else {
+			// Empty the return object if no more pages should run.
+			delete_setting( $script, 'arguments' );
 		}
 	}
-	set_setting( $script, 'arguments', $arguments );
 }
 
 /**
