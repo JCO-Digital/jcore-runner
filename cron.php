@@ -51,7 +51,7 @@ function cron_deactivate() {
  * @return void
  */
 function unschedule_action( $hook ) {
-		// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
+	// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
 	while ( $timestamp = wp_next_scheduled( $hook ) ) {
 		// Unschedule all hooks.
 		wp_unschedule_event( $timestamp, $hook );
@@ -125,10 +125,10 @@ function cron_manager( string $script ) {
 		)
 	);
 	$runner = get_hook_name( $script, true );
+	// Clean up if there are remaining hooks.
 	unschedule_action( $runner );
-	if ( ! wp_next_scheduled( $runner ) ) {
-		wp_schedule_single_event( time(), $runner, array( $script ) );
-	}
+	// Schedule next runner.
+	wp_schedule_single_event( time(), $runner );
 }
 
 /**
@@ -143,13 +143,13 @@ function cron_runner( string $script ) {
 		return;
 	}
 	$runner = get_hook_name( $script, true );
-	// Unschedule any extra runners in case of overlap.
-	if ( wp_next_scheduled( $runner ) ) {
-		unschedule_action( $runner );
-	}
+	
+	// Unschedule any extra runners in case of overlap. Redundancy only.
+	unschedule_action( $runner );
 	
 	$arguments = get_setting( $script, 'arguments', array() );
 	if ( empty( $arguments ) ) {
+		// Abort if no arguments are found. Redundancy only.
 		return;
 	}
 	// Create log file handle.
@@ -179,10 +179,12 @@ function cron_runner( string $script ) {
 			// Next page is defined.
 			$arguments['page'] = $return->next_page;
 			$arguments['data'] = $return->data;
-			wp_schedule_single_event( time(), $runner, array( $script ) );
+			// Save script settings.
 			set_setting( $script, 'arguments', $arguments );
+			// Schedule next runner.
+			wp_schedule_single_event( time(), $runner );
 		} else {
-			// Empty the return object if no more pages should run.
+			// Delete script settings if no more pages.
 			delete_setting( $script, 'arguments' );
 		}
 	}
