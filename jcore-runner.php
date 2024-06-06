@@ -24,7 +24,7 @@ require_once 'cron.php';
 require_once 'rest-runner.php';
 require_once 'classes/class-arguments.php';
 require_once 'classes/class-runnertable.php';
-require_once 'ui.php';
+require_once 'ui/ui.php';
 
 /**
  * Load translations.
@@ -88,7 +88,7 @@ function show_admin_page() {
 // Handles setting the title to be the script name to better see which is which when multiple runners are open.
 add_filter(
 	'admin_title',
-	static function( $admin_title, $title ) {
+	static function ( $admin_title, $title ) {
 		$script = get_script_from_url( 'script' );
 		if ( ! $script ) {
 			return $admin_title;

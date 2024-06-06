@@ -63,6 +63,7 @@ class Export {
 	 * Add a row to the dataset.
 	 *
 	 * @param array $row Array of values to insert into data.
+	 * @param int   $index Insert at a specific point.
 	 * @return void
 	 */
 	public function add_row( array $row, int $index = -1 ) {

@@ -47,14 +47,22 @@ function cron_deactivate() {
 /**
  * Unschedule all actions for a specific hook.
  *
- * @param mixed $hook Cron hook name.
+ * @param string $hook Cron hook name.
+ * @param mixed  $arguments Optional arguments to clean up old hooks. This can be removed later.
  * @return void
  */
-function unschedule_action( $hook ) {
-	// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
+function unschedule_action( string $hook, $arguments = null ) {
 	while ( $timestamp = wp_next_scheduled( $hook ) ) {
 		// Unschedule all hooks.
 		wp_unschedule_event( $timestamp, $hook );
+	}
+
+	// Cleanup hooks created by bug. This can be removed later.
+	if ( ! empty( $arguments ) ) {
+		while ( $timestamp = wp_next_scheduled( $hook, $arguments ) ) {
+			// Unschedule all hooks.
+			wp_unschedule_event( $timestamp, $hook, $arguments );
+		}
 	}
 }
 
@@ -70,7 +78,7 @@ function schedule_action( string $script, string $action ) {
 		return;
 	}
 	$hook = get_hook_name( $script );
-	unschedule_action( $hook );
+	unschedule_action( $hook, array( $script ) );
 	if ( ! wp_next_scheduled( $hook ) && 'unschedule' !== $action ) {
 		wp_schedule_event( time(), $action, $hook );
 	}
@@ -126,7 +134,7 @@ function cron_manager( string $script ) {
 	);
 	$runner = get_hook_name( $script, true );
 	// Clean up if there are remaining hooks.
-	unschedule_action( $runner );
+	unschedule_action( $runner, array( $script ) );
 	// Schedule next runner.
 	wp_schedule_single_event( time(), $runner );
 }
@@ -143,10 +151,10 @@ function cron_runner( string $script ) {
 		return;
 	}
 	$runner = get_hook_name( $script, true );
-	
+
 	// Unschedule any extra runners in case of overlap. Redundancy only.
 	unschedule_action( $runner );
-	
+
 	$arguments = get_setting( $script, 'arguments', array() );
 	if ( empty( $arguments ) ) {
 		// Abort if no arguments are found. Redundancy only.

@@ -162,7 +162,6 @@ class File {
 				case 'csv':
 					$data = array();
 					$file = fopen( $json_filename, 'rb' );
-					// phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
 					while ( ( $row = fgetcsv( $file, null, '|' ) ) !== false ) {
 						$data[] = $row;
 					}
@@ -179,7 +178,7 @@ class File {
 	/**
 	 * Write data to file.
 	 *
-	 * @param array $data Data to write to file.
+	 * @param mixed $data Data to write to file.
 	 *
 	 * @return void
 	 */

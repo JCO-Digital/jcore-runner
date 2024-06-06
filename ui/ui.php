@@ -12,14 +12,14 @@ namespace Jcore\Runner;
  *
  * @param string $filename
  * @param array  $variables
- * @param bool   $echo
+ * @param bool   $output
  *
  * @return void|bool|string
  */
-function include_template( string $filename, array $variables, bool $echo = true ) {
+function include_template( string $filename, array $variables, bool $output = true ) {
 	extract( $variables );
 	if ( file_exists( $filename ) ) {
-		if ( $echo ) {
+		if ( $output ) {
 			include $filename;
 		} else {
 			ob_start();
