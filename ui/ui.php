@@ -108,7 +108,7 @@ function render_script_page( array $params ) {
 				default => 'generic',
 			};
 			$type     = sanitize_file_name( $type );
-			$filename = __DIR__ . '/ui/inputs/' . $type . '.php';
+			$filename = __DIR__ . '/inputs/' . $type . '.php';
 			include_template(
 				$filename,
 				array(
