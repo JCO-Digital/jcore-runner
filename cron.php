@@ -107,7 +107,7 @@ function add_cron_interval( $schedules ) {
 		'interval' => 604800,
 		'display'  => __( 'Weekly' ),
 	);
-	return $schedules;
+	return apply_filters( 'jcore_runner_cron_schedules', $schedules );
 }
 
 
