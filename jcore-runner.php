@@ -4,7 +4,7 @@
  * Description: A WordPress plugin to easily allow manual running of scripts for maintenance and utility.
  * Plugin URI: https://github.com/JCO-Digital/jcore-runner#readme
  * Author: JCO Digital
- * Version: 3.0.9
+ * Version: 3.1.0-0
  * Author URI: http://jco.fi
  * Text Domain: jcore-runner
  * Domain Path: /languages
