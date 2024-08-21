@@ -105,17 +105,17 @@ function add_cron_interval( $schedules ) {
 		'display'         => __( 'Every Minute' ),
 		'is_jcore_runner' => true,
 	);
-	$schedules['hourly']       = array(
+	$schedules['jcore_hourly']       = array(
 		'interval'        => 3600,
 		'display'         => __( 'Hourly' ),
 		'is_jcore_runner' => true,
 	);
-	$schedules['daily']        = array(
+	$schedules['jcore_daily']        = array(
 		'interval'        => 86400,
 		'display'         => __( 'Daily' ),
 		'is_jcore_runner' => true,
 	);
-	$schedules['weekly']       = array(
+	$schedules['jcore_weekly']       = array(
 		'interval'        => 604800,
 		'display'         => __( 'Weekly' ),
 		'is_jcore_runner' => true,
