@@ -83,6 +83,7 @@ function schedule_action( string $script, string $action ) {
 			}
 		)
 	);
+	$schedules = array( ...$schedules, 'unschedule' );
 	if ( ! in_array( $action, $schedules, true ) ) {
 		return;
 	}
