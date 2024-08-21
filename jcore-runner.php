@@ -73,7 +73,7 @@ function show_admin_page() {
  *
  * @return void
  */
-function register_cron_actions(): void {
+function handle_cron_action(): void {
 	$schedule = get_script_from_url( 'schedule' );
 	if ( $schedule ) {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -89,7 +89,7 @@ function register_cron_actions(): void {
 		exit();
 	}
 }
-add_action( 'admin_init', '\Jcore\Runner\register_cron_actions' );
+add_action( 'admin_init', '\Jcore\Runner\handle_cron_action' );
 
 // Handles setting the title to be the script name to better see which is which when multiple runners are open.
 add_filter(
