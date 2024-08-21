@@ -81,46 +81,31 @@ class RunnerTable extends WP_List_Table {
 			// Cron Column.
 			$next = wp_next_scheduled( get_hook_name( $item['id'] ) );
 			if ( false === $next ) {
-				$content = __( 'Not scheduled', 'jcore-runner' );
-				$actions = array(
-					'hourly' => sprintf(
-						'<a href="%s">%s</a>',
-						add_query_arg(
-							array(
-								'page'     => 'jcore-runner',
-								'schedule' => esc_attr( $item['id'] ),
-								'action'   => 'hourly',
-							),
-							admin_url( 'admin.php' )
-						),
-						__( 'Hourly', 'jcore-runner' )
-					),
-					'daily'  => sprintf(
-						'<a href="%s">%s</a>',
-						add_query_arg(
-							array(
-								'page'     => 'jcore-runner',
-								'schedule' => esc_attr( $item['id'] ),
-								'action'   => 'daily',
-							),
-							admin_url( 'admin.php' )
-						),
-						__( 'Daily', 'jcore-runner' )
-					),
-					'weekly' => sprintf(
-						'<a href="%s">%s</a>',
-						add_query_arg(
-							array(
-								'page'     => 'jcore-runner',
-								'schedule' => esc_attr( $item['id'] ),
-								'action'   => 'weekly',
-							),
-							admin_url( 'admin.php' )
-						),
-						__( 'Weekly', 'jcore-runner' )
-					),
+				$schedules = wp_get_schedules();
+				$schedules = array_filter(
+					$schedules,
+					static function ( $schedule ) {
+						return true === $schedule['is_jcore_runner'];
+					}
 				);
-
+				$content   = __( 'Not scheduled', 'jcore-runner' );
+				$actions   = array_map(
+					static function ( $schedule ) use ( $item ) {
+						return sprintf(
+							'<a href="%s">%s</a>',
+							add_query_arg(
+								array(
+									'page'     => 'jcore-runner',
+									'schedule' => esc_attr( $item['id'] ),
+									'action'   => $schedule['interval'],
+								),
+								admin_url( 'admin.php' )
+							),
+							$schedule['display']
+						);
+					},
+					$schedules
+				);
 			} else {
 				$time = wp_date( get_option( 'time_format' ), $next );
 				if ( wp_date( get_option( 'date_format' ), $next ) !== wp_date( get_option( 'date_format' ) ) ) {

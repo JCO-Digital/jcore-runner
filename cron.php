@@ -74,12 +74,21 @@ function unschedule_action( string $hook, $arguments = null ) {
  * @return void
  */
 function schedule_action( string $script, string $action ) {
-	if ( ! in_array( $action, array( 'hourly', 'daily', 'weekly', 'unschedule' ), true ) ) {
+	$schedules = wp_get_schedules();
+	$schedules = array_keys(
+		array_filter(
+			$schedules,
+			static function ( $schedule ) {
+				return true === $schedule['is_jcore_runner'];
+			}
+		)
+	);
+	if ( ! in_array( $action, $schedules, true ) ) {
 		return;
 	}
 	$hook = get_hook_name( $script );
 	unschedule_action( $hook, array( $script ) );
-	if ( ! wp_next_scheduled( $hook ) && 'unschedule' !== $action ) {
+	if ( 'unschedule' !== $action && ! wp_next_scheduled( $hook ) ) {
 		wp_schedule_event( time(), $action, $hook );
 	}
 }
@@ -92,20 +101,24 @@ function schedule_action( string $script, string $action ) {
  */
 function add_cron_interval( $schedules ) {
 	$schedules['every_minute'] = array(
-		'interval' => 60,
-		'display'  => __( 'Every Minute' ),
+		'interval'        => 60,
+		'display'         => __( 'Every Minute' ),
+		'is_jcore_runner' => true,
 	);
 	$schedules['hourly']       = array(
-		'interval' => 3600,
-		'display'  => __( 'Hourly' ),
+		'interval'        => 3600,
+		'display'         => __( 'Hourly' ),
+		'is_jcore_runner' => true,
 	);
 	$schedules['daily']        = array(
-		'interval' => 86400,
-		'display'  => __( 'Daily' ),
+		'interval'        => 86400,
+		'display'         => __( 'Daily' ),
+		'is_jcore_runner' => true,
 	);
 	$schedules['weekly']       = array(
-		'interval' => 604800,
-		'display'  => __( 'Weekly' ),
+		'interval'        => 604800,
+		'display'         => __( 'Weekly' ),
+		'is_jcore_runner' => true,
 	);
 	return apply_filters( 'jcore_runner_cron_schedules', $schedules );
 }

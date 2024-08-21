@@ -56,24 +56,7 @@ function show_admin_page() {
 	style_register( 'jcore_runner', '/css/jcore-runner.css' );
 	wp_enqueue_style( 'jcore_runner' );
 
-	$script   = get_script_from_url( 'script' );
-	$schedule = get_script_from_url( 'schedule' );
-
-	if ( $schedule ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : 'hourly';
-
-		schedule_action( $schedule['id'], $action );
-		$location = add_query_arg(
-			array(
-				'page' => 'jcore-runner',
-			),
-			admin_url( 'admin.php' )
-		);
-
-		header( 'Location: ' . $location );
-		exit();
-	}
+	$script = get_script_from_url( 'script' );
 
 	if ( ! $script ) {
 		$table = new RunnerTable();
@@ -84,6 +67,29 @@ function show_admin_page() {
 		render_script_page( $script );
 	}
 }
+
+/**
+ * Register the cron schedule actions.
+ *
+ * @return void
+ */
+function register_cron_actions(): void {
+	$schedule = get_script_from_url( 'schedule' );
+	if ( $schedule ) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : 'hourly';
+		schedule_action( $schedule['id'], $action );
+		$location = add_query_arg(
+			array(
+				'page' => 'jcore-runner',
+			),
+			admin_url( 'admin.php' )
+		);
+		wp_safe_redirect( $location );
+		exit();
+	}
+}
+add_action( 'admin_init', '\Jcore\Runner\register_cron_actions' );
 
 // Handles setting the title to be the script name to better see which is which when multiple runners are open.
 add_filter(
