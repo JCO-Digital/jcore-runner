@@ -90,21 +90,22 @@ class RunnerTable extends WP_List_Table {
 				);
 				$content   = __( 'Not scheduled', 'jcore-runner' );
 				$actions   = array_map(
-					static function ( $schedule ) use ( $item ) {
+					static function ( $key ) use ( $schedules, $item ) {
+						$schedule = $schedules[ $key ];
 						return sprintf(
 							'<a href="%s">%s</a>',
 							add_query_arg(
 								array(
 									'page'     => 'jcore-runner',
 									'schedule' => esc_attr( $item['id'] ),
-									'action'   => $schedule['interval'],
+									'action'   => $key,
 								),
 								admin_url( 'admin.php' )
 							),
 							$schedule['display']
 						);
 					},
-					$schedules
+					array_keys( $schedules ),
 				);
 			} else {
 				$time = wp_date( get_option( 'time_format' ), $next );
