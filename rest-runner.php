@@ -11,6 +11,7 @@ namespace Jcore\Runner;
 // phpcs:ignore
 error_reporting( E_ERROR | E_PARSE );
 
+use WP_REST_Request;
 use WP_REST_Response;
 
 add_action( 'rest_api_init', 'Jcore\Runner\add_endpoints' );
@@ -39,13 +40,19 @@ function add_endpoints(): void {
 /**
  * Endpoint that runs the defined function.
  *
- * @param mixed $request Rest request.
+ * @param WP_REST_Request $request Rest request.
  * @return WP_REST_Response
  */
 function run_script( $request ) {
 	$functions = \apply_filters( 'jcore_runner_functions', array() );
 	$response  = new \WP_REST_Response();
-	$json      = $request->get_json_params();
+	$json      = $request->get_params();
+	$files     = get_files_from_request( $request );
+	if ( ! empty( $files ) ) {
+		foreach ( $files as $key => $value ) {
+			$json['input'][ $key ] = $value;
+		}
+	}
 
 	if ( empty( $functions[ $json['script'] ] ) ) {
 		$response->set_status( 404 );
@@ -80,4 +87,41 @@ function run_script( $request ) {
 	}
 
 	return $response;
+}
+
+/**
+ * Cleans the files from the request.
+ *
+ * @param WP_REST_Request $request The request object.
+ *
+ * @return array
+ */
+function get_files_from_request( WP_REST_Request $request ) {
+	$files     = array();
+	$req_files = $request->get_file_params();
+	// The files we get are in the format of:
+	// 'name' => [
+	// 'input_name' => 'FILENAME',
+	// ],
+	// 'tmp_name' => [
+	// 'input_name' => 'FILENAME',
+	// ]
+
+	// We need to convert it to:
+	// 'input_name' => [
+	// 'name' => 'FILENAME',
+	// 'tmp_name' => 'FILENAME',
+	// ],
+	if ( empty( $req_files ) || ! is_array( $req_files ) || empty( $req_files['input'] ) ) {
+		return $files;
+	}
+
+	$file_keys = array_keys( $req_files['input'] );
+
+	foreach ( $req_files['input']['name'] as $key => $value ) {
+		foreach ( $file_keys as $file_key ) {
+			$files[ $key ][ $file_key ] = $req_files['input'][ $file_key ][ $key ];
+		}
+	}
+	return $files;
 }

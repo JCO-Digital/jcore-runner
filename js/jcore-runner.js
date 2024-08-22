@@ -1,5 +1,35 @@
 const jcoreRunnerButtons = [];
 
+/**
+ * Recursively converts an object to a FormData object.
+ *
+ * This handles arrays and (one level) nested objects.
+ * It is not the most efficient way to do this, but it works.
+ *
+ * @param {Object} obj The object to convert.
+ * @returns {FormData} The converted FormData object.
+ */
+function objectToFormData(obj) {
+	const formData = new FormData();
+	for (const key of Object.keys(obj)) {
+		if (Array.isArray(obj[key])) {
+			const tempKey = `${key}[]`;
+			for (const value of obj[key]) {
+				formData.append(tempKey, value);
+			}
+			continue;
+		}
+		if (typeof obj[key] === "object") {
+			for (const subKey of Object.keys(obj[key])) {
+				formData.append(`${key}[${subKey}]`, obj[key][subKey]);
+			}
+			continue;
+		}
+		formData.append(key, obj[key]);
+	}
+	return formData;
+}
+
 function jcoreRunnerCallEndpoint(script, settings) {
 	const data = Object.assign(
 		{
@@ -17,13 +47,13 @@ function jcoreRunnerCallEndpoint(script, settings) {
 		output.innerHTML = "";
 	}
 	jcoreRunnerRunning(data);
+	const formData = objectToFormData(data);
 	const options = {
-		method: "POST", // *GET, POST, PUT, DELETE, etc.
+		method: "POST",
 		headers: {
-			"Content-Type": "application/json",
 			"X-WP-Nonce": wpApiSettings.nonce,
 		},
-		body: JSON.stringify(data), // body data type must match "Content-Type" header
+		body: formData,
 	};
 	fetch(`${wpApiSettings.root}jcore_runner/v1/run/`, options)
 		.then((response) => response.json())
@@ -52,7 +82,7 @@ function jcoreRunnerCallEndpoint(script, settings) {
 					exportFile: jsonData.exportFile,
 					exportFileExtension: jsonData.exportFileExtension ?? "json",
 					input: data.input,
-					data: jsonData.data,
+					data: jsonData.data ?? {},
 				};
 				jcoreRunnerCallEndpoint(script, settings);
 			} else if (jsonData.exportFile) {
@@ -112,6 +142,10 @@ window.addEventListener("DOMContentLoaded", () => {
 					["checkbox", "radio"].includes(field.type)
 				) {
 					input[field.name] = field.checked;
+					continue;
+				}
+				if (field.tagName === "INPUT" && field.type === "file") {
+					input[field.name] = field.files[0];
 					continue;
 				}
 				input[field.name] = field.value;
