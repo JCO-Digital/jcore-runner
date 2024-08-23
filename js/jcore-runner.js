@@ -1,6 +1,21 @@
 const jcoreRunnerButtons = [];
 
 /**
+ * Checks if a value is a plain object.
+ * (i.e., not an array or null, or a File/Date/etc.)
+ * @param {any} value The value to check.
+ * @returns {boolean} True if the value is a plain object, false otherwise.
+ */
+function isPlainObject(value) {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		value.constructor === Object &&
+		Object.prototype.toString.call(value) === "[object Object]"
+	);
+}
+
+/**
  * Recursively converts an object to a FormData object.
  *
  * This handles arrays and (one level) nested objects.
@@ -19,7 +34,7 @@ function objectToFormData(obj, parentKey = "") {
 		if (Array.isArray(value)) {
 			for (const item of value) {
 				const arrayKey = `${fullKey}[]`;
-				if (typeof item === "object" && item !== null) {
+				if (isPlainObject(item)) {
 					objectToFormData(item, arrayKey).forEach((value, key) =>
 						formData.append(key, value),
 					);
@@ -27,7 +42,7 @@ function objectToFormData(obj, parentKey = "") {
 					formData.append(arrayKey, item);
 				}
 			}
-		} else if (typeof value === "object" && value !== null) {
+		} else if (isPlainObject(value)) {
 			objectToFormData(value, fullKey).forEach((nestedValue, nestedKey) =>
 				formData.append(nestedKey, nestedValue),
 			);
