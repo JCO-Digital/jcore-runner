@@ -7,25 +7,29 @@ const jcoreRunnerButtons = [];
  * It is not the most efficient way to do this, but it works.
  *
  * @param {Object} obj The object to convert.
+ * @param {string} parentKey The key of the parent object. Used for nested objects.
  * @returns {FormData} The converted FormData object.
  */
-function objectToFormData(obj) {
+function objectToFormData(obj, parentKey = '') {
 	const formData = new FormData();
-	for (const key of Object.keys(obj)) {
-		if (Array.isArray(obj[key])) {
-			const tempKey = `${key}[]`;
-			for (const value of obj[key]) {
-				formData.append(tempKey, value);
-			}
-			continue;
+
+	for (const [key, value] of Object.entries(obj)) {
+		const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+
+		if (Array.isArray(value)) {
+			value.forEach((item) => {
+				const arrayKey = `${fullKey}[]`;
+				if (typeof item === 'object' && item !== null) {
+					objectToFormData(item, arrayKey).forEach((value, key) => formData.append(key, value));
+				} else {
+					formData.append(arrayKey, item);
+				}
+			});
+		} else if (typeof value === 'object' && value !== null) {
+			objectToFormData(value, fullKey).forEach((nestedValue, nestedKey) => formData.append(nestedKey, nestedValue));
+		} else {
+			formData.append(fullKey, value);
 		}
-		if (typeof obj[key] === "object") {
-			for (const subKey of Object.keys(obj[key])) {
-				formData.append(`${key}[${subKey}]`, obj[key][subKey]);
-			}
-			continue;
-		}
-		formData.append(key, obj[key]);
 	}
 	return formData;
 }
