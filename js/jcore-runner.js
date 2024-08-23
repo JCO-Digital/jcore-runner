@@ -10,23 +10,27 @@ const jcoreRunnerButtons = [];
  * @param {string} parentKey The key of the parent object. Used for nested objects.
  * @returns {FormData} The converted FormData object.
  */
-function objectToFormData(obj, parentKey = '') {
+function objectToFormData(obj, parentKey = "") {
 	const formData = new FormData();
 
 	for (const [key, value] of Object.entries(obj)) {
 		const fullKey = parentKey ? `${parentKey}[${key}]` : key;
 
 		if (Array.isArray(value)) {
-			value.forEach((item) => {
+			for (const item of value) {
 				const arrayKey = `${fullKey}[]`;
-				if (typeof item === 'object' && item !== null) {
-					objectToFormData(item, arrayKey).forEach((value, key) => formData.append(key, value));
+				if (typeof item === "object" && item !== null) {
+					objectToFormData(item, arrayKey).forEach((value, key) =>
+						formData.append(key, value),
+					);
 				} else {
 					formData.append(arrayKey, item);
 				}
-			});
-		} else if (typeof value === 'object' && value !== null) {
-			objectToFormData(value, fullKey).forEach((nestedValue, nestedKey) => formData.append(nestedKey, nestedValue));
+			}
+		} else if (typeof value === "object" && value !== null) {
+			objectToFormData(value, fullKey).forEach((nestedValue, nestedKey) =>
+				formData.append(nestedKey, nestedValue),
+			);
 		} else {
 			formData.append(fullKey, value);
 		}
