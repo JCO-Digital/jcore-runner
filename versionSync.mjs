@@ -10,7 +10,7 @@ try {
     const comment = match[0];
     if (comment.indexOf("Plugin Name:") > -1) {
       let newComment = comment.replace(
-        /Version: [0-9.]+/,
+        /Version: .*/,
         `Version: ${pack.version}`,
       );
       if (pack.description) {
