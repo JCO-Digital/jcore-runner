@@ -14,6 +14,8 @@
 
 namespace Jcore\Runner;
 
+use getID3;
+
 register_deactivation_hook( __FILE__, '\Jcore\Runner\cron_deactivate' );
 
 add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
@@ -25,6 +27,13 @@ require_once 'rest-runner.php';
 require_once 'classes/class-arguments.php';
 require_once 'classes/class-runnertable.php';
 require_once 'ui/ui.php';
+
+// Test script
+$test_script = __DIR__ . '/test.php';
+if ( file_exists( $test_script ) ) {
+	require_once $test_script;
+}
+
 
 /**
  * Load translations.
@@ -39,14 +48,17 @@ function load_textdomain() {
  * Adds menu to WP Admin
  */
 function add_menu() {
-	add_submenu_page(
-		'tools.php', // Parent slug.
-		apply_filters( 'jcore_runner_title', 'Script Runner' ), // Page Title.
-		apply_filters( 'jcore_runner_menu', 'JCORE Script Runner' ), // Menu Title.
-		'manage_options', // Capabilities.
-		'jcore-runner', // Menu Slug.
-		'\Jcore\Runner\show_admin_page' // Page render callback.
-	);
+	foreach ( get_runner_groups() as $key => $group ) {
+		add_submenu_page(
+			'tools.php', // Parent slug.
+			$group['title'], // Page Title.
+			$group['menu'] ?? $group['title'], // Menu Title.
+			'manage_options', // Capabilities.
+			'jcore-runner-' . $key, // Menu Slug.
+			'\Jcore\Runner\show_admin_page' // Page render callback.
+		);
+
+	}
 }
 
 /**
@@ -56,15 +68,22 @@ function show_admin_page() {
 	style_register( 'jcore_runner', '/css/jcore-runner.css' );
 	wp_enqueue_style( 'jcore_runner' );
 
-	$script = get_script_from_url( 'script' );
+	$group = get_group_from_page();
+
+	if ( empty( $group ) ) {
+		echo __( 'Invalid group', 'jcore-runner' );
+		return;
+	}
+
+	$script = get_script_from_url( $group );
 
 	if ( ! $script ) {
-		$table = new RunnerTable();
+		$table = new RunnerTable( $group );
 		$table->prepare_items();
 
 		$table->display();
 	} else {
-		render_script_page( $script );
+		render_script_page( $group, $script );
 	}
 }
 

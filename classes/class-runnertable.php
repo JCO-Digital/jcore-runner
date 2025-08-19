@@ -21,12 +21,15 @@ use WP_List_Table;
  */
 class RunnerTable extends WP_List_Table {
 
+	protected $group = '';
+
 	/**
 	 * Initializes the object by calling the constructor of the parent class with the necessary parameters.
 	 *
 	 * @return void
 	 */
-	public function __construct() {
+	public function __construct( $group ) {
+		$this->group = $group;
 		parent::__construct(
 			array(
 				'singular' => 'runner',
@@ -51,6 +54,10 @@ class RunnerTable extends WP_List_Table {
 		);
 	}
 
+	public function get_page(): string {
+		return "jcore-runner-{$this->group}";
+	}
+
 	/**
 	 * Returns the value for the specified column in the given item.
 	 *
@@ -70,7 +77,7 @@ class RunnerTable extends WP_List_Table {
 				'<a href="%s">%s</a>',
 				add_query_arg(
 					array(
-						'page'   => 'jcore-runner',
+						'page'   => $this->get_page(),
 						'script' => esc_attr( $item['id'] ),
 					),
 					admin_url( 'tools.php' )
@@ -89,14 +96,15 @@ class RunnerTable extends WP_List_Table {
 					}
 				);
 				$content   = __( 'Not scheduled', 'jcore-runner' );
+				$group     = $this->group;
 				$actions   = array_map(
-					static function ( $key ) use ( $schedules, $item ) {
+					static function ( $key ) use ( $schedules, $item, $group ) {
 						$schedule = $schedules[ $key ];
 						return sprintf(
 							'<a href="%s">%s</a>',
 							add_query_arg(
 								array(
-									'page'     => 'jcore-runner',
+									'page'     => "jcore-runner-{$group}",
 									'schedule' => esc_attr( $item['id'] ),
 									'action'   => $key,
 								),
@@ -123,7 +131,7 @@ class RunnerTable extends WP_List_Table {
 						'<a href="%s">%s</a>',
 						add_query_arg(
 							array(
-								'page'     => 'jcore-runner',
+								'page'     => $this->get_page(),
 								'schedule' => esc_attr( $item['id'] ),
 								'action'   => 'unschedule',
 							),
@@ -165,7 +173,7 @@ class RunnerTable extends WP_List_Table {
 		$this->_column_headers = array( $columns, $hidden, $this->get_sortable_columns() );
 
 		$scripts = array();
-		foreach ( \apply_filters( 'jcore_runner_functions', array() ) as $key => $item ) {
+		foreach ( get_runner_scripts( $this->group ) as $key => $item ) {
 			$item['id'] = $key;
 			$scripts[]  = $item;
 		}

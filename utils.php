@@ -108,14 +108,14 @@ function join_path( string $path, string ...$parts ): string {
  * @param string $name The name of the _GET variable.
  * @return false|array
  */
-function get_script_from_url( string $name = 'script' ) {
+function get_script_from_url( string $group, string $name = 'script' ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( empty( $_GET[ $name ] ) ) {
 		return false;
 	}
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$script  = sanitize_text_field( wp_unslash( $_GET[ $name ] ) );
-	$scripts = \apply_filters( 'jcore_runner_functions', array() );
+	$scripts = get_runner_scripts( $group );
 	if ( empty( $scripts[ $script ] ) ) {
 		return false;
 	}
@@ -182,4 +182,61 @@ function delete_setting( string $scope, string $name ) {
  */
 function get_option_name( string $scope, string $name ) {
 	return sprintf( 'jcore_runner_%s_%s', $scope, $name );
+}
+
+/**
+ * Retrieves all registered runner groups.
+ *
+ * This function retrieves all runner groups defined through the 'jcore_runner_groups' filter.
+ * Each group contains information such as title, menu label, and associated scripts.
+ *
+ * @return array An associative array of runner groups, keyed by their unique identifiers.
+ */
+function get_runner_groups(): array {
+	return \apply_filters(
+		'jcore_runner_groups',
+		array(
+			'default' => array(
+				'title'   => \apply_filters( 'jcore_runner_title', 'Script Runner' ),
+				'menu'    => \apply_filters( 'jcore_runner_menu', 'JCORE Script Runner' ),
+				'scripts' => \apply_filters( 'jcore_runner_functions', array() ),
+			),
+		)
+	);
+}
+
+/**
+ * Retrieves a specific runner group based on its key.
+ *
+ * @param string $group The key of the runner group to retrieve.
+ *
+ * @return array The runner group if found, otherwise an empty array.
+ */
+function get_runner_group( string $group ): array {
+	$groups = get_runner_groups();
+	return $groups[ $group ] ?? array();
+}
+
+/**
+ * Retrieves all scripts registered to a specific runner group.
+ *
+ * This function retrieves the scripts associated with a specified runner group.
+ * It uses the `get_runner_group` function to obtain the group's data and
+ * then extracts the 'scripts' array from it.
+ *
+ * @param string $group The key of the runner group.
+ *
+ * @return array An array of scripts associated with the group, or an empty array if the group or scripts are not found.
+ */
+function get_runner_scripts( string $group ): array {
+	$data = get_runner_group( $group );
+	return $data['scripts'] ?? array();
+}
+
+function get_group_from_page(): string {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( empty( $_GET['page'] ) ) {
+		return '';
+	}
+	return str_replace( 'jcore-runner-', '', $_GET['page'] );
 }

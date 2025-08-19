@@ -53,9 +53,10 @@ function objectToFormData(obj, parentKey = "") {
 	return formData;
 }
 
-function jcoreRunnerCallEndpoint(script, settings) {
+function jcoreRunnerCallEndpoint(group, script, settings) {
 	const data = Object.assign(
 		{
+		  group,
 			script,
 			page: 1,
 			clear: false,
@@ -173,7 +174,7 @@ window.addEventListener("DOMContentLoaded", () => {
 				}
 				input[field.name] = field.value;
 			}
-			jcoreRunnerCallEndpoint(element.dataset.jcoreScript, {
+			jcoreRunnerCallEndpoint(element.dataset.jcoreGroup, element.dataset.jcoreScript, {
 				input,
 				clear: true,
 			});
