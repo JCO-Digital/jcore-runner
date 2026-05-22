@@ -152,6 +152,18 @@ Scripts registered via `jcore_runner_functions` can be scheduled directly from t
 - `jcore_daily`
 - `jcore_weekly`
 
+### WP-CLI
+
+Scripts registered via `jcore_runner_functions` are also available through WP-CLI.
+
+```bash
+wp runner list
+wp runner run my_utility_script --batch_size=50
+wp runner my_utility_script --batch_size=50
+```
+
+The CLI runner supports paginated scripts and accepts registered input fields as `--field=value` arguments. Use `--max-pages=<number>` to cap paginated runs, and `--page=<number>` to resume from a specific page.
+
 ## Hooks & Filters
 
 - `jcore_runner_functions`: Main filter to register scripts.
