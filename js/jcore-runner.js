@@ -128,6 +128,7 @@ function jcoreRunnerCallEndpoint(script, settings) {
 		})
 		.catch((error) => {
 			jcoreRunnerRunning(false);
+			output.innerHTML += `\nRequest failed: ${error.message}`;
 		});
 }
 
@@ -138,16 +139,18 @@ function jcoreRunnerRunning(run = false) {
 		element.disabled = run !== false;
 	}
 	if (run === false) {
-		progress.innerHTML = "Done";
+		progress.textContent = "Done";
+		progress.dataset.state = "done";
 		spinner.style.display = "none";
 	} else {
-		progress.innerHTML = `Running ${run.script}, page: ${run.page}`;
+		progress.textContent = `Running ${run.script}, page: ${run.page}`;
+		progress.dataset.state = "running";
 		spinner.style.display = "block";
 	}
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-	document.querySelectorAll("[data-jcore-script]").forEach((element, i) => {
+	for (const element of document.querySelectorAll("[data-jcore-script]")) {
 		jcoreRunnerButtons.push(element);
 		element.addEventListener("click", () => {
 			const input = {};
@@ -178,5 +181,5 @@ window.addEventListener("DOMContentLoaded", () => {
 				clear: true,
 			});
 		});
-	});
+	}
 });

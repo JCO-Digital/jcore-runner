@@ -67,16 +67,21 @@ class RunnerTable extends WP_List_Table {
 		if ( 'name' === $column_name ) {
 			// Name Column.
 			$content = sprintf(
-				'<a href="%s">%s</a>',
-				add_query_arg(
-					array(
-						'page'   => 'jcore-runner',
-						'script' => esc_attr( $item['id'] ),
-					),
-					admin_url( 'tools.php' )
+				'<a class="jcore-runner-script-link" href="%s">%s</a>',
+				esc_url(
+					add_query_arg(
+						array(
+							'page'   => 'jcore-runner',
+							'script' => $item['id'],
+						),
+						admin_url( 'tools.php' )
+					)
 				),
-				$item['title']
+				esc_html( $item['title'] )
 			);
+			if ( ! empty( $item['id'] ) ) {
+				$content .= '<span class="jcore-runner-script-id">' . esc_html( $item['id'] ) . '</span>';
+			}
 		} elseif ( 'cron' === $column_name ) {
 			// Cron Column.
 			$next = wp_next_scheduled( get_hook_name( $item['id'] ) );
@@ -88,21 +93,23 @@ class RunnerTable extends WP_List_Table {
 						return true === $schedule['is_jcore_runner'];
 					}
 				);
-				$content   = __( 'Not scheduled', 'jcore-runner' );
+				$content   = '<span class="jcore-runner-muted">' . esc_html__( 'Not scheduled', 'jcore-runner' ) . '</span>';
 				$actions   = array_map(
 					static function ( $key ) use ( $schedules, $item ) {
 						$schedule = $schedules[ $key ];
 						return sprintf(
 							'<a href="%s">%s</a>',
-							add_query_arg(
-								array(
-									'page'     => 'jcore-runner',
-									'schedule' => esc_attr( $item['id'] ),
-									'action'   => $key,
-								),
-								admin_url( 'admin.php' )
+							esc_url(
+								add_query_arg(
+									array(
+										'page'     => 'jcore-runner',
+										'schedule' => $item['id'],
+										'action'   => $key,
+									),
+									admin_url( 'admin.php' )
+								)
 							),
-							$schedule['display']
+							esc_html( $schedule['display'] )
 						);
 					},
 					array_keys( $schedules ),
@@ -113,23 +120,25 @@ class RunnerTable extends WP_List_Table {
 					$time .= ' ' . wp_date( get_option( 'date_format' ), $next );
 				}
 				// translators: Time and possible date.
-				$content = sprintf( __( 'Next Scheduled Run: %s', 'jcore-runner' ), $time );
+				$content = '<span class="jcore-runner-schedule">' . esc_html( sprintf( __( 'Next Scheduled Run: %s', 'jcore-runner' ), $time ) ) . '</span>';
 				if ( wp_next_scheduled( get_hook_name( $item['id'], true ) ) ) {
-					$content .= ' (' . __( 'In progress', 'jcore-runner' ) . ')';
+					$content .= ' <span class="jcore-runner-badge">' . esc_html__( 'In progress', 'jcore-runner' ) . '</span>';
 				}
 
 				$actions = array(
 					'unschedule' => sprintf(
 						'<a href="%s">%s</a>',
-						add_query_arg(
-							array(
-								'page'     => 'jcore-runner',
-								'schedule' => esc_attr( $item['id'] ),
-								'action'   => 'unschedule',
-							),
-							admin_url( 'admin.php' )
+						esc_url(
+							add_query_arg(
+								array(
+									'page'     => 'jcore-runner',
+									'schedule' => $item['id'],
+									'action'   => 'unschedule',
+								),
+								admin_url( 'admin.php' )
+							)
 						),
-						__( 'Unschedule', 'jcore-runner' )
+						esc_html__( 'Unschedule', 'jcore-runner' )
 					),
 				);
 			}
@@ -137,21 +146,63 @@ class RunnerTable extends WP_List_Table {
 			foreach ( File::get_files( 'logs', $item['id'] . '.log', 2 ) as $file ) {
 				$content .= sprintf(
 					'<a href="%s">%s</a><br/>',
-					$file['url'],
-					$file['name'],
+					esc_url( $file['url'] ),
+					esc_html( $file['name'] ),
 				);
 			}
 		} elseif ( 'export' === $column_name ) {
 			foreach ( File::get_files( 'export', $item['id'] . '-', 2 ) as $file ) {
 				$content .= sprintf(
 					'<a href="%s">%s</a><br/>',
-					$file['url'],
-					$file['name'],
+					esc_url( $file['url'] ),
+					esc_html( $file['name'] ),
 				);
 			}
 		}
 
 		return $content . $this->row_actions( $actions );
+	}
+
+	/**
+	 * Message displayed when no scripts match the current view.
+	 *
+	 * @return void
+	 */
+	public function no_items(): void {
+		esc_html_e( 'No scripts found.', 'jcore-runner' );
+	}
+
+	/**
+	 * Filters scripts by the admin search term.
+	 *
+	 * @param array  $scripts Scripts registered with the runner.
+	 * @param string $search Search term.
+	 *
+	 * @return array
+	 */
+	private function filter_scripts( array $scripts, string $search ): array {
+		if ( '' === $search ) {
+			return $scripts;
+		}
+
+		return array_values(
+			array_filter(
+				$scripts,
+				static function ( $item ) use ( $search ) {
+					$haystack = array(
+						$item['id'] ?? '',
+						$item['title'] ?? '',
+					);
+
+					foreach ( $item['input'] ?? array() as $field => $input ) {
+						$haystack[] = $field;
+						$haystack[] = $input['title'] ?? '';
+					}
+
+					return str_contains( strtolower( implode( ' ', $haystack ) ), $search );
+				}
+			)
+		);
 	}
 
 	/**
@@ -169,6 +220,11 @@ class RunnerTable extends WP_List_Table {
 			$item['id'] = $key;
 			$scripts[]  = $item;
 		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$search  = isset( $_REQUEST['s'] ) && is_scalar( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
+		$search  = strtolower( $search );
+		$scripts = $this->filter_scripts( $scripts, $search );
 
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
