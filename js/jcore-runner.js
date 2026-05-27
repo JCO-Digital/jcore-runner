@@ -150,7 +150,7 @@ function jcoreRunnerRunning(run = false) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-	document.querySelectorAll("[data-jcore-script]").forEach((element) => {
+	for (const element of document.querySelectorAll("[data-jcore-script]")) {
 		jcoreRunnerButtons.push(element);
 		element.addEventListener("click", () => {
 			const input = {};
@@ -181,5 +181,5 @@ window.addEventListener("DOMContentLoaded", () => {
 				clear: true,
 			});
 		});
-	});
+	}
 });

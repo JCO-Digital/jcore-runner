@@ -1,3 +1,12 @@
+<?php
+/**
+ * Select input template.
+ *
+ * @package Jcore\Runner
+ */
+
+?>
+
 <label class="jcore-input-label">
 	<?php echo esc_html( $input['title'] ); ?>
 	<select id="<?php echo esc_attr( $field ); ?>"

@@ -10,13 +10,14 @@ namespace Jcore\Runner;
 /**
  * Checks if file exists and includes it with the variables.
  *
- * @param string $filename
- * @param array  $variables
- * @param bool   $output
+ * @param string $filename  Template filename.
+ * @param array  $variables Variables to extract for the template.
+ * @param bool   $output    Whether to output the template immediately.
  *
  * @return void|bool|string
  */
 function include_template( string $filename, array $variables, bool $output = true ) {
+	// phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 	extract( $variables );
 	if ( file_exists( $filename ) ) {
 		if ( $output ) {
@@ -32,7 +33,7 @@ function include_template( string $filename, array $variables, bool $output = tr
 /**
  * Add all scripts needed to be registered here, depending on the type of input.
  *
- * @param mixed $type
+ * @param mixed $type Input type.
  *
  * @return void
  */

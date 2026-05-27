@@ -1,4 +1,10 @@
 <?php
+/**
+ * Date input template.
+ *
+ * @package Jcore\Runner
+ */
+
 try {
 	$default = new DateTime( $input['default'] );
 	$default = $default->format( 'U' );
