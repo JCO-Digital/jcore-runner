@@ -145,8 +145,12 @@ function cli_run_script( string $script, array $args, array $assoc_args ): void 
 			\WP_CLI::line( wp_strip_all_tags( $output ) );
 		}
 
-		if ( ! $return instanceof Arguments || ! $return->check_status() ) {
-			\WP_CLI::error( 'Runner script failed.' );
+		if ( ! $return instanceof Arguments ) {
+			\WP_CLI::error( 'Runner script failed: callback did not return an Arguments instance.' );
+		}
+
+		if ( ! $return->check_status() ) {
+			\WP_CLI::error( sprintf( 'Runner script failed with status: %s', $return->status ) );
 		}
 
 		if ( ! empty( $return->return ) ) {
@@ -166,8 +170,7 @@ function cli_run_script( string $script, array $args, array $assoc_args ): void 
 		$page = $return->next_page;
 
 		if ( ! empty( $page ) && $processed >= $max_pages ) {
-			\WP_CLI::warning( "Stopped after {$max_pages} pages. Re-run with --page={$page} to continue." );
-			break;
+			\WP_CLI::error( "Stopped after {$max_pages} pages before completion. Re-run with --page={$page} to continue." );
 		}
 	} while ( ! empty( $page ) );
 
@@ -261,8 +264,9 @@ function cli_get_default_input_value( array $settings ): mixed {
  */
 function get_valid_scripts(): array {
 	$scripts = array();
-	foreach ( \apply_filters( 'jcore_runner_functions', array() ) as $script => $options ) {
-		if ( ! empty( $options['callback'] ) && is_callable( $options['callback'] ) ) {
+	foreach ( array_keys( \apply_filters( 'jcore_runner_functions', array() ) ) as $script ) {
+		$options = is_valid_script( $script );
+		if ( false !== $options ) {
 			$scripts[ $script ] = $options;
 		}
 	}
