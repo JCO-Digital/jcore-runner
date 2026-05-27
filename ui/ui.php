@@ -85,28 +85,31 @@ function render_script_page( array $params ) {
 	}
 
 	printf(
-		'<a class="back" href="%s">%s</a>',
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		'<a class="jcore-runner-back" href="%s">%s<span>%s</span></a>',
 		esc_url(
 			add_query_arg(
 				array(
 					'page' => 'jcore-runner',
 				),
-				admin_url( 'admin.php' )
+				admin_url( 'tools.php' )
 			)
 		),
-		'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>'
+		'<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>',
+		esc_html__( 'All scripts', 'jcore-runner' )
 	);
 
-	echo '<h2>' . esc_html( $params['title'] ) . '</h2>';
+	echo '<div class="jcore-runner-script-header">';
+	echo '<h1>' . esc_html( $params['title'] ) . '</h1>';
+	echo '<div id="jcore-runner-progress" class="jcore-runner-progress" role="status" aria-live="polite">' . esc_html__( 'Ready', 'jcore-runner' ) . '</div>';
+	echo '</div>';
+	echo '<div class="jcore-runner-panel jcore-runner-controls">';
 	echo '<div id="jcore-runner-input">';
 	if ( ! empty( $params['input'] ) ) {
 		foreach ( $params['input'] as $field => $input ) {
-			$type = match ( $input['type'] ) {
-				'date'   => 'date',
-				'select' => 'select',
-				default => 'generic',
-			};
+			$type = 'generic';
+			if ( 'date' === $input['type'] || 'select' === $input['type'] ) {
+				$type = $input['type'];
+			}
 			$type     = sanitize_file_name( $type );
 			$filename = __DIR__ . '/inputs/' . $type . '.php';
 			include_template(
@@ -118,24 +121,24 @@ function render_script_page( array $params ) {
 				)
 			);
 		}
+	} else {
+		echo '<p class="jcore-runner-empty">' . esc_html__( 'This script does not require input.', 'jcore-runner' ) . '</p>';
 	}
 	echo '</div>';
 	echo '<div id="jcore-runner-buttons">';
-	echo '<button class="icon" data-jcore-script="' . esc_html( $params['id'] ) . '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></button>';
-	// echo '<button class="icon" data-jcore-script="' . esc_html( $params['id'] ) . '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4l192 160L256 241V96c0-17.7 14.3-32 32-32s32 14.3 32 32V416c0 17.7-14.3 32-32 32s-32-14.3-32-32V271l-11.5 9.6-192 160z"/></svg></button>';
-	// echo '<button class="icon" data-jcore-script="' . esc_html( $params['id'] ) . '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg></button>';
+	echo '<button type="button" class="button button-primary jcore-runner-run" data-jcore-script="' . esc_attr( $params['id'] ) . '"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg><span>' . esc_html__( 'Run script', 'jcore-runner' ) . '</span></button>';
 	echo '</div>';
 	echo '<div id="jcore-runner-spinner"></div>';
-	echo '<div id="jcore-runner-progress">Nothing running</div>';
-	echo '<div id="jcore-runner-return">';
+	echo '</div>';
+	echo '<div id="jcore-runner-return" class="jcore-runner-panel jcore-runner-status">';
 	foreach ( get_status() as $id => $data ) {
 		echo '<h3>' . esc_html( $data['title'] ) . '</h3>';
-		echo '<div id="jcore-runner-return-' . esc_html( $id ) . '">';
+		echo '<div id="jcore-runner-return-' . esc_attr( $id ) . '">';
 		echo esc_html( $data['content'] );
 		echo '</div>';
 	}
 	echo '</div>';
-	echo '<pre id="jcore-runner-output"></pre>';
+	echo '<pre id="jcore-runner-output" aria-live="polite"></pre>';
 }
 
 /**

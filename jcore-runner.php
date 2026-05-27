@@ -59,14 +59,21 @@ function show_admin_page() {
 
 	$script = get_script_from_url( 'script' );
 
+	echo '<div class="wrap jcore-runner-wrap">';
 	if ( ! $script ) {
 		$table = new RunnerTable();
 		$table->prepare_items();
 
+		echo '<h1>' . esc_html( apply_filters( 'jcore_runner_title', 'Script Runner' ) ) . '</h1>';
+		echo '<form class="jcore-runner-list-form" method="get" action="' . esc_url( admin_url( 'tools.php' ) ) . '">';
+		echo '<input type="hidden" name="page" value="jcore-runner" />';
+		$table->search_box( __( 'Search scripts', 'jcore-runner' ), 'jcore-runner' );
 		$table->display();
+		echo '</form>';
 	} else {
 		render_script_page( $script );
 	}
+	echo '</div>';
 }
 
 /**

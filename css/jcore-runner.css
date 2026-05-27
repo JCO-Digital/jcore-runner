@@ -1,113 +1,349 @@
-#jcore-runner-progress {
-  margin: 1rem;
+.jcore-runner-wrap {
+  --runner-border: #d7dde3;
+  --runner-border-strong: #b8c2cc;
+  --runner-ink: #16202a;
+  --runner-muted: #617080;
+  --runner-panel: #ffffff;
+  --runner-panel-soft: #f6f8fa;
+  --runner-primary: #0f6d5f;
+  --runner-primary-dark: #0a4c43;
+  --runner-accent: #b54708;
+  --runner-terminal: #07110f;
+
+  max-width: 1240px;
 }
 
-#jcore-runner-output {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  width: 98%;
-  height: 600px;
-  overflow: scroll;
-  background-color: black;
-  color: lightgreen;
+.jcore-runner-wrap h1 {
+  color: var(--runner-ink);
+  font-weight: 650;
 }
 
-@keyframes jcore-runner-spinner {
-  0% {
-    transform: translate3d(-50%, -50%, 0) rotate(0deg);
-  }
-
-  100% {
-    transform: translate3d(-50%, -50%, 0) rotate(360deg);
-  }
+.jcore-runner-list-form {
+  margin-top: 18px;
 }
 
-#jcore-runner-spinner::before {
-  animation: 1.5s linear infinite jcore-runner-spinner;
-  animation-play-state: inherit;
-  border: solid 5px #cfd0d1;
-  border-bottom-color: #1c87c9;
-  border-radius: 50%;
-  content: "";
-  height: 20px;
-  width: 20px;
-  position: absolute;
-  transform: translate3d(-50%, -50%, 0);
-  will-change: transform;
-}
-
-#jcore-runner-spinner {
-  float: right;
-  margin-right: 4rem;
-  display: none;
-}
-
-#jcore-runner-buttons {
+.jcore-runner-list-form .search-box {
+  align-items: center;
   display: flex;
-  gap: 1rem;
-
-  & button.icon {
-    width: 32px;
-  }
-
-  & input {
-    width: 160px;
-
-    &[type="number"] {
-      width: 70px;
-    }
-  }
+  float: none;
+  gap: 8px;
+  justify-content: flex-end;
+  margin: 0 0 12px;
 }
 
-#jcore-runner-return>div {
-  background-color: #bdc5c9;
-  min-height: 23px;
-  width: 98%;
+.jcore-runner-list-form .search-box input[type="search"] {
+  border-color: var(--runner-border-strong);
+  border-radius: 6px;
+  min-height: 36px;
+  min-width: min(360px, 100%);
 }
 
-a.back {
-  & svg {
-    width: 32px;
-  }
+.jcore-runner-list-form .wp-list-table {
+  border-color: var(--runner-border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(22, 32, 42, 0.04);
+  overflow: hidden;
+}
+
+.jcore-runner-list-form .wp-list-table thead th,
+.jcore-runner-list-form .wp-list-table tfoot th {
+  background: #eef2f5;
+  color: #263746;
+  font-weight: 650;
+}
+
+.jcore-runner-list-form .wp-list-table tbody tr:hover {
+  background: #f8fbfb;
+}
+
+.jcore-runner-script-link {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 650;
+  margin-bottom: 2px;
+}
+
+.jcore-runner-script-id {
+  color: var(--runner-muted);
+  display: block;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 12px;
+}
+
+.jcore-runner-muted {
+  color: var(--runner-muted);
+}
+
+.jcore-runner-badge {
+  background: #fff4e5;
+  border: 1px solid #f3cf9b;
+  border-radius: 999px;
+  color: var(--runner-accent);
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.jcore-runner-back {
+  align-items: center;
+  color: var(--runner-primary);
+  display: inline-flex;
+  gap: 8px;
+  margin: 12px 0 8px;
+  text-decoration: none;
+}
+
+.jcore-runner-back:hover,
+.jcore-runner-back:focus {
+  color: var(--runner-primary-dark);
+}
+
+.jcore-runner-back svg {
+  fill: currentColor;
+  height: 14px;
+  width: 14px;
+}
+
+.jcore-runner-script-header {
+  margin-bottom: 14px;
+}
+
+.jcore-runner-script-header h1 {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+
+.jcore-runner-script-header > .notice {
+  display: block;
+  margin: 12px 0;
+  max-width: 100%;
+}
+
+.jcore-runner-progress {
+  background: #eef2f5;
+  border: 1px solid var(--runner-border);
+  border-radius: 999px;
+  color: var(--runner-muted);
+  display: inline-flex;
+  font-weight: 650;
+  line-height: 1;
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+.jcore-runner-progress[data-state="running"] {
+  background: #e7f5f2;
+  border-color: #9dcfc5;
+  color: var(--runner-primary-dark);
+}
+
+.jcore-runner-progress[data-state="done"] {
+  background: #edf7ed;
+  border-color: #a7d7a7;
+  color: #1f6f35;
+}
+
+.jcore-runner-panel {
+  background: var(--runner-panel);
+  border: 1px solid var(--runner-border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(22, 32, 42, 0.04);
+}
+
+.jcore-runner-controls {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  margin-bottom: 16px;
+  padding: 18px;
 }
 
 #jcore-runner-input {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem 0;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .jcore-input-label {
+  color: var(--runner-ink);
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  width: fit-content;
+  font-weight: 650;
+  gap: 6px;
+  max-width: 420px;
 }
 
-.jcore-input-label>input,
-.jcore-input-label>select {
-  width: fit-content;
-  min-width: 150px;
+.jcore-input-label > input,
+.jcore-input-label > select,
+.jcore-input-label .select2-container {
+  font-weight: 400;
+  max-width: 100%;
+  min-width: min(260px, 100%);
 }
 
-.jcore-input-label>input[type="checkbox"],
-.jcore-input-label>input[type="radio"] {
+.jcore-input-label > input:not([type="checkbox"]):not([type="radio"]),
+.jcore-input-label > select {
+  border-color: var(--runner-border-strong);
+  border-radius: 6px;
+  min-height: 36px;
+}
+
+.jcore-input-label > input[type="checkbox"],
+.jcore-input-label > input[type="radio"] {
   min-width: unset;
   width: 1rem;
 }
 
-#jcore-runner-export-download {
+.jcore-runner-empty {
+  color: var(--runner-muted);
+  margin: 0;
+}
+
+#jcore-runner-buttons {
+  align-items: end;
   display: flex;
-  padding: 1rem 0;
-  font-size: 1rem;
-  gap: 0.5rem;
+  gap: 10px;
+}
+
+.jcore-runner-run.button {
   align-items: center;
+  background: var(--runner-primary);
+  border-color: var(--runner-primary-dark);
+  border-radius: 6px;
+  display: inline-flex;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 15px;
+}
+
+.jcore-runner-run.button:hover,
+.jcore-runner-run.button:focus {
+  background: var(--runner-primary-dark);
+  border-color: var(--runner-primary-dark);
+}
+
+.jcore-runner-run.button:disabled {
+  opacity: 0.65;
+}
+
+.jcore-runner-run svg {
+  fill: currentColor;
+  height: 12px;
+  width: 12px;
+}
+
+@keyframes jcore-runner-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#jcore-runner-spinner {
+  align-self: end;
+  display: none;
+  height: 30px;
+  position: relative;
+  width: 30px;
+}
+
+#jcore-runner-spinner::before {
+  animation: 1s linear infinite jcore-runner-spinner;
+  border: solid 3px #c9d2da;
+  border-bottom-color: var(--runner-primary);
+  border-radius: 50%;
+  content: "";
+  display: block;
+  height: 24px;
+  width: 24px;
+}
+
+.jcore-runner-status {
+  margin-bottom: 16px;
+  padding: 16px 18px;
+}
+
+.jcore-runner-status h3 {
+  color: var(--runner-ink);
+  font-size: 13px;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+#jcore-runner-return > div {
+  background-color: var(--runner-panel-soft);
+  border: 1px solid var(--runner-border);
+  border-radius: 6px;
+  min-height: 22px;
+  padding: 10px 12px;
+}
+
+#jcore-runner-output {
+  background: var(--runner-terminal);
+  border: 1px solid #1d302b;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: #9af0b8;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 13px;
+  height: min(58vh, 620px);
+  line-height: 1.55;
+  margin: 0;
+  overflow: auto;
+  padding: 16px;
+  white-space: pre-wrap;
+  width: auto;
+  word-wrap: break-word;
+}
+
+#jcore-runner-export-download {
+  align-items: center;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 650;
+  gap: 6px;
+  margin-top: 12px;
   text-decoration: none;
 }
 
 #jcore-runner-export-download::before {
   content: "\f316";
-  font-family: dashicons;
   display: inline-block;
+  font-family: dashicons;
+}
+
+@media (max-width: 782px) {
+  .jcore-runner-list-form .search-box {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .jcore-runner-list-form .search-box input[type="search"] {
+    min-width: 100%;
+  }
+
+  .jcore-runner-script-header {
+    display: block;
+  }
+
+  .jcore-runner-controls {
+    grid-template-columns: 1fr;
+  }
+
+  #jcore-runner-buttons {
+    align-items: stretch;
+  }
+
+  .jcore-runner-run.button {
+    justify-content: center;
+    width: 100%;
+  }
 }
