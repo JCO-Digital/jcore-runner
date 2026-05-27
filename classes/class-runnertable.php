@@ -72,7 +72,7 @@ class RunnerTable extends WP_List_Table {
 					add_query_arg(
 						array(
 							'page'   => 'jcore-runner',
-							'script' => esc_attr( $item['id'] ),
+							'script' => $item['id'],
 						),
 						admin_url( 'tools.php' )
 					)
@@ -103,7 +103,7 @@ class RunnerTable extends WP_List_Table {
 								add_query_arg(
 									array(
 										'page'     => 'jcore-runner',
-										'schedule' => esc_attr( $item['id'] ),
+										'schedule' => $item['id'],
 										'action'   => $key,
 									),
 									admin_url( 'admin.php' )
@@ -132,7 +132,7 @@ class RunnerTable extends WP_List_Table {
 							add_query_arg(
 								array(
 									'page'     => 'jcore-runner',
-									'schedule' => esc_attr( $item['id'] ),
+									'schedule' => $item['id'],
 									'action'   => 'unschedule',
 								),
 								admin_url( 'admin.php' )

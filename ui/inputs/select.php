@@ -19,7 +19,7 @@
 	</select>
 	<script>
 	jQuery(document).ready(function($) {
-		$('#<?php echo esc_html( $field ); ?>').select2();
+		$('#<?php echo esc_js( $field ); ?>').select2();
 	})
 	</script>
 </label>
