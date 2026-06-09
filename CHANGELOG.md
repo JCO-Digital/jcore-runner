@@ -1,10 +1,14 @@
 # Changelog
 
-## 4.3.0 (2026-06-09)
+## 4.4.0 (2026-06-09)
 
 #### Features
 
 - update: Added jcore-update integration (1c0d89d)
+
+#### Build System
+
+- npm: specify package manager version (82fb238)
 
 #### Continuous Integration
 
