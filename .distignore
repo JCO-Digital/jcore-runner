@@ -1,0 +1,8 @@
+.github/
+.idea/
+node_modules/
+release/
+vendor/
+.zipexclude
+Makefile
+version.json
