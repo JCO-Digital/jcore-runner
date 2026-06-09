@@ -1,5 +1,5 @@
 {
-	"name": "jcore/runner",
+	"name": "jcodigital/jcore-runner",
 	"description": "JCORE Script Runner. A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-only",
