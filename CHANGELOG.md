@@ -1,6 +1,12 @@
 # Changelog
 
-### 4.4.1 (2026-06-09)
+### 4.4.2 (2026-06-09)
+
+#### Build System
+
+- composer: rename package to jcodigital/jcore-runner (5b5863c)
+
+### v4.4.1 (2026-06-09)
 
 #### Styles
 
