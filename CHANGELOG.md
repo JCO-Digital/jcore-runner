@@ -1,6 +1,12 @@
 # Changelog
 
-## 4.4.0 (2026-06-09)
+### 4.4.1 (2026-06-09)
+
+#### Styles
+
+- metadata: update plugin header requirements (d5e85ca)
+
+## v4.4.0 (2026-06-09)
 
 #### Features
 
