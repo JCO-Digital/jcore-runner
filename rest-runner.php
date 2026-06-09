@@ -7,6 +7,10 @@
 
 namespace Jcore\Runner;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Disable Warnings in rest API because why would you ever want that?
 // phpcs:ignore
 error_reporting( E_ERROR | E_PARSE );

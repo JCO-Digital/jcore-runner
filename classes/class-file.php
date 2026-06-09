@@ -7,6 +7,10 @@
 
 namespace Jcore\Runner;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class for handling file operations.
  */

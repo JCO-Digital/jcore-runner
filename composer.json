@@ -1,30 +1,31 @@
 {
-  "name": "jcore/runner",
-  "description": "JCORE Script Runner. A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
-  "type": "wordpress-plugin",
-  "license": "GPL-2.0-only",
-  "authors": [
-    {
-      "name": "JCo Digital",
-      "email": "support@jco.fi"
-    }
-  ],
-  "require": {
-    "composer/installers": "^2.2.0"
-  },
-  "minimum-stability": "stable",
-  "require-dev": {
-    "squizlabs/php_codesniffer": "^3.7",
-    "wp-coding-standards/wpcs": "^3.1",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
-  },
-  "config": {
-    "allow-plugins": {
-      "composer/installers": true,
-      "dealerdirect/phpcodesniffer-composer-installer": true
-    },
-    "platform": {
-      "php": "8.0"
-    }
-  }
+	"name": "jcore/runner",
+	"description": "JCORE Script Runner. A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-only",
+	"authors": [
+		{
+			"name": "JCo Digital",
+			"email": "support@jco.fi"
+		}
+	],
+	"require": {
+		"composer/installers": "^2.2.0",
+		"jcodigital/jcore-update": "^1.1"
+	},
+	"minimum-stability": "stable",
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.7",
+		"wp-coding-standards/wpcs": "^3.1",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"platform": {
+			"php": "8.1"
+		}
+	}
 }

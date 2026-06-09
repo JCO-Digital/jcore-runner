@@ -1,26 +1,26 @@
 {
-  "name": "jcore-runner",
-  "version": "4.2.0",
-  "description": "A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
-  "main": "index.js",
-  "scripts": {
-    "test": "biome check ./js",
-    "format": "biome check --apply ./js",
-    "preversion": "npm test",
-    "version": "node versionSync.mjs && git add jcore-runner.php",
-    "postversion": "git push && git push --tags"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JCO-Digital/jcore-runner.git"
-  },
-  "author": "JCO Digital",
-  "license": "GPL-2.0-only",
-  "bugs": {
-    "url": "https://github.com/JCO-Digital/jcore-runner/issues"
-  },
-  "homepage": "https://github.com/JCO-Digital/jcore-runner#readme",
-  "devDependencies": {
-    "@biomejs/biome": "1.5.1"
-  }
+	"name": "jcore-runner",
+	"version": "4.2.0",
+	"description": "A WordPress plugin to easily allow manual running of scripts for maintenance and utility.",
+	"scripts": {
+		"test": "biome check ./js",
+		"format": "biome check --write ./js",
+		"env:start": "pnpm dlx @wordpress/env start",
+		"env:stop": "pnpm dlx @wordpress/env stop",
+		"make-pot": "pnpm dlx @wp-blocks/make-pot@1.6.3 . languages/",
+		"make-json": "pnpm --package='@wp-blocks/make-pot@1.6.3' makejson build/ languages/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JCO-Digital/jcore-runner.git"
+	},
+	"author": "JCO Digital",
+	"license": "GPL-2.0-only",
+	"bugs": {
+		"url": "https://github.com/JCO-Digital/jcore-runner/issues"
+	},
+	"homepage": "https://github.com/JCO-Digital/jcore-runner#readme",
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.16"
+	}
 }

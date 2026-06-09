@@ -35,17 +35,17 @@ function objectToFormData(obj, parentKey = "") {
 			for (const item of value) {
 				const arrayKey = `${fullKey}[]`;
 				if (isPlainObject(item)) {
-					objectToFormData(item, arrayKey).forEach((value, key) =>
-						formData.append(key, value),
-					);
+					objectToFormData(item, arrayKey).forEach((value, key) => {
+						formData.append(key, value);
+					});
 				} else {
 					formData.append(arrayKey, item);
 				}
 			}
 		} else if (isPlainObject(value)) {
-			objectToFormData(value, fullKey).forEach((nestedValue, nestedKey) =>
-				formData.append(nestedKey, nestedValue),
-			);
+			objectToFormData(value, fullKey).forEach((nestedValue, nestedKey) => {
+				formData.append(nestedKey, nestedValue);
+			});
 		} else {
 			formData.append(fullKey, value);
 		}

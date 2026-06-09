@@ -7,6 +7,10 @@
 
 namespace Jcore\Runner;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 add_filter( 'cron_schedules', '\Jcore\Runner\add_cron_interval', 20 );
 add_action( 'init', '\Jcore\Runner\register_cron_actions' );
 

@@ -7,6 +7,10 @@
 
 namespace Jcore\Runner;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once 'class-export.php';
 
 

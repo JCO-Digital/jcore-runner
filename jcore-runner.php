@@ -14,6 +14,16 @@
 
 namespace Jcore\Runner;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+}
+
+defined( 'JCORE_RUNNER_PLUGIN_FILE' ) || define( 'JCORE_RUNNER_PLUGIN_FILE', __FILE__ );
+
 register_deactivation_hook( __FILE__, '\Jcore\Runner\cron_deactivate' );
 
 add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
@@ -26,6 +36,7 @@ require_once 'cli.php';
 require_once 'classes/class-arguments.php';
 require_once 'classes/class-runnertable.php';
 require_once 'ui/ui.php';
+require_once 'update.php';
 
 /**
  * Load translations.

@@ -7,6 +7,7 @@
 node_modules/
 dist/
 vendor/
+release/
 
 # Backup files
 *~
@@ -52,4 +53,3 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
-
