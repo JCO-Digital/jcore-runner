@@ -1,13 +1,16 @@
 <?php
 /**
- * Plugin Name: JCORE Script Runner
- * Description: A WordPress plugin to easily allow manual running of scripts for maintenance and utility.
- * Plugin URI: https://github.com/JCO-Digital/jcore-runner#readme
- * Author: JCO Digital
- * Version: 4.4.0
- * Author URI: http://jco.fi
- * Text Domain: jcore-runner
- * Domain Path: /languages
+ * Plugin Name:       JCORE Script Runner
+ * Description:       A WordPress plugin to easily allow manual running of scripts for maintenance and utility.
+ * Plugin URI:        https://github.com/JCO-Digital/jcore-runner#readme
+ * Author:            JCO Digital
+ * Version:           4.4.0
+ * Requires at least: 6.7
+ * Tested up to:      7.0
+ * Requires PHP:      8.1
+ * Author URI:        http://jco.fi
+ * Text Domain:       jcore-runner
+ * Domain Path:       /languages
  *
  * @package Jcore\Runner
  */
