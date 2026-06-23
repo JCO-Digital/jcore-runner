@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once 'class-file.php';
+require_once __DIR__ . '/class-file.php';
 
 /**
  * Export data.

@@ -32,14 +32,14 @@ register_deactivation_hook( __FILE__, '\Jcore\Runner\cron_deactivate' );
 add_action( 'admin_menu', '\Jcore\Runner\add_menu' );
 add_action( 'init', '\Jcore\Runner\load_textdomain' );
 
-require_once 'utils.php';
-require_once 'cron.php';
-require_once 'rest-runner.php';
-require_once 'cli.php';
-require_once 'classes/class-arguments.php';
-require_once 'classes/class-runnertable.php';
-require_once 'ui/ui.php';
-require_once 'update.php';
+require_once __DIR__ . '/utils.php';
+require_once __DIR__ . '/cron.php';
+require_once __DIR__ . '/rest-runner.php';
+require_once __DIR__ . '/cli.php';
+require_once __DIR__ . '/classes/class-arguments.php';
+require_once __DIR__ . '/classes/class-runnertable.php';
+require_once __DIR__ . '/ui/ui.php';
+require_once __DIR__ . '/update.php';
 
 /**
  * Load translations.
