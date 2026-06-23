@@ -1,6 +1,13 @@
 # Changelog
 
-### 4.4.2 (2026-06-09)
+### 4.4.3 (2026-06-23)
+
+#### Bug Fixes
+
+- actually deploy (790de35)
+- use absolute plugin include paths (cac17a5)
+
+### v4.4.2 (2026-06-09)
 
 #### Build System
 
