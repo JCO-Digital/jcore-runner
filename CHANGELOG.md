@@ -1,6 +1,12 @@
 # Changelog
 
-### 4.4.3 (2026-06-23)
+### 4.4.4 (2026-09-16)
+
+#### Build System
+
+- deps: update PHP requirement to 8.3 and foonver action (4b1e597)
+
+### v4.4.3 (2026-06-23)
 
 #### Bug Fixes
 
@@ -71,49 +77,22 @@
 
 ## v4.0.0 (2024-08-23)
 
+#### Bug Fixes
+
+- Also allow unscheduling of cron jobs... 🐛 (59b6099)
+- Pass the key to the schedule action callback URL 🐛 (8553fb9)
+- rename the cron schedules to avoid conflicts 🐛 (fafac40)
+- fixed redeclaration of function :bug: (2d5c3c9)
+
 #### Refactor
 
 - Make the objectToFormData function recursive to handle nested objects ♻️ (01bcc0f)
+- Use FormData instead of JSON for data, this allows for files to be sent. ♻️ (3df8768)
+- Cron schedules refactored and runner table refactored ♻️ (e591112)
 
 #### Maintenance
 
 - formatting 🎨 (ec1407f)
-
-## v3.1.1-rc.0 (2024-08-22)
-
-#### Refactor
-
-- Use FormData instead of JSON for data, this allows for files to be sent. ♻️ (3df8768)
-
-### v3.1.0-rc.4 (2024-08-21)
-
-#### Bug Fixes
-
-- Also allow unscheduling of cron jobs... 🐛 (59b6099)
-
-### v3.1.0-rc.3 (2024-08-21)
-
-#### Bug Fixes
-
-- Pass the key to the schedule action callback URL 🐛 (8553fb9)
-
-### v3.1.0-rc.2 (2024-08-21)
-
-#### Bug Fixes
-
-- rename the cron schedules to avoid conflicts 🐛 (fafac40)
-
-### v3.1.0-rc.1 (2024-08-21)
-
-#### Bug Fixes
-
-- fixed redeclaration of function :bug: (2d5c3c9)
-
-## v3.1.0-rc.0 (2024-08-21)
-
-#### Refactor
-
-- Cron schedules refactored and runner table refactored ♻️ (e591112)
 
 ### v3.0.9 (2024-08-20)
 
@@ -129,7 +108,8 @@
 
 ### v3.0.7 (2024-06-06)
 
-### Misc
+#### Misc
+
 - Code cleanup (7c81d4b)
 - Fix cron arguments, and clean up logic. (881fa92)
 - Changed cron runner to single script schedule. (0fbb961)
@@ -190,7 +170,8 @@
 
 - formatting (c94fd2d)
 
-### Misc
+#### Misc
+
 - Update rest-runner.php. Disable Warnings (cd00e1f)
 
 ### v2.1.1 (2024-03-18)
@@ -205,7 +186,8 @@
 
 ## v2.1.0 (2024-02-09)
 
-### Misc
+#### Misc
+
 - Release candidate. (ee2f042)
 - Everything should work now, UI is still not there. (19826bd)
 - Code should work, UI still sucks. (8bdc219)
@@ -228,12 +210,14 @@
 
 - Cleanup and final tweaks before release. (cbb26fd)
 
-### Breaking
+#### Breaking
+
 - Custom script arguments now uses a class to improve usability. (8e79f82)
 
 ### v1.1.2 (2024-01-02)
 
-### Misc
+#### Misc
+
 - Added newline between outputs. (368b041)
 
 ### v1.1.1 (2024-01-02)
@@ -244,11 +228,13 @@
 - Added version sync from package.json (37caa42)
 - file exporter now manages JSON data (c181bf1)
 
-### Feature
+#### Feature
+
 - Added input field support. (5b93b16)
 - Added export class for exporting data to file. (2716628)
 
-### Misc
+#### Misc
+
 - Version update (1462084)
 
 ### v1.0.2 (2023-12-21)
@@ -268,7 +254,8 @@
 
 ## v1.0.0 (2023-11-09)
 
-### Misc
+#### Misc
+
 - Added composer json (a4f91ca)
 - Return value support (a3fb2e8)
 - Scroll output and styling. (122b435)
