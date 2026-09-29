@@ -39,6 +39,8 @@ jobs:
       release_notes: ${{ needs.release.outputs.release_notes }}
       plugin_file: "jcore-runner.php"
       dist_repo: "git@git.jcore.fi:/srv/git/jcore-runner.git"
+      slack_channel: "#jcore_updates"
     secrets:
       UPDATE_API_KEY: ${{ secrets.UPDATE_API_KEY }}
       DIST_REPO_SSH_KEY: ${{ secrets.DIST_REPO_SSH_KEY }}
+      SLACK_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

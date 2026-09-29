@@ -1,5 +1,5 @@
 parser = "all"
-version-sync = ["jcore-runner.php", "readme.txt", "package.json"]
+version-sync = ["jcore-runner.php", "readme.txt"]
 changelog = true
 changelog-format = "wordpress"
 changelog-file = "readme.txt"
