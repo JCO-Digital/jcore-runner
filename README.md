@@ -173,5 +173,13 @@ The CLI runner supports paginated scripts and accepts registered input fields as
 
 ## Requirements
 
-- PHP 8.0+
-- WordPress 6.0+
+- PHP 8.1+
+- WordPress 6.7+ (tested up to 7.0)
+
+## Releases
+
+Releases are made with [foonver](https://github.com/foonly/foonver) from conventional commits. The version is synced to `jcore-runner.php`, `readme.txt` and `package.json`, and the changelog is written to the `== Changelog ==` section of `readme.txt`, which WordPress shows in the plugin information popup. Do not edit that section by hand.
+
+## Changelog
+
+See the changelog section of [readme.txt](readme.txt) for a detailed version history.
