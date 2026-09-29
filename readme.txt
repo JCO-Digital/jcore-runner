@@ -4,7 +4,7 @@ Tags: maintenance, scripts, cron, wp-cli, tools
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 4.4.4
+Stable tag: 4.4.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,12 @@ Yes. Use `wp runner list` to see registered scripts and `wp runner run <script>`
 
 == Changelog ==
 
+= 4.4.5 (2026-09-29) =
+
+* Documentation: readme - add readme.txt with changelog and move changelog generation there
+* Build: deps - update jcore-update to 1.7.1
+* CI: Add Slack notifications to release workflow
+
 = v4.4.4 (2026-09-16) =
 
 * Build: deps - update PHP requirement to 8.3 and foonver action
@@ -84,9 +90,9 @@ Yes. Use `wp runner list` to see registered scripts and `wp runner run <script>`
 
 = v4.4.0 (2026-06-09) =
 
-* Feature: update - added jcore-update integration
+* Feature: update - Added jcore-update integration
 * Build: npm - specify package manager version
-* Continuous Integration: add release pipeline and project configuration
+* CI: add release pipeline and project configuration
 
 = v4.2.0 (2026-05-27) =
 
@@ -104,32 +110,32 @@ Yes. Use `wp runner list` to see registered scripts and `wp runner run <script>`
 
 = v4.0.1 (2024-08-23) =
 
-* Fix: fixed a bug where classes were not correctly handled in checking for plain objects
+* Fix: Fixed a bug where classes were not correctly handled in checking for plain objects.
 
 = v4.0.0 (2024-08-23) =
 
-* Fix: also allow unscheduling of cron jobs
-* Fix: pass the key to the schedule action callback URL
-* Fix: rename the cron schedules to avoid conflicts
-* Fix: fixed redeclaration of function
-* Refactor: make the objectToFormData function recursive to handle nested objects
-* Refactor: use FormData instead of JSON for data, this allows for files to be sent
-* Refactor: cron schedules refactored and runner table refactored
-* Maintenance: formatting
+* Fix: Also allow unscheduling of cron jobs... 🐛
+* Fix: Pass the key to the schedule action callback URL 🐛
+* Fix: rename the cron schedules to avoid conflicts 🐛
+* Fix: fixed redeclaration of function :bug:
+* Refactor: Make the objectToFormData function recursive to handle nested objects ♻️
+* Refactor: Use FormData instead of JSON for data, this allows for files to be sent. ♻️
+* Refactor: Cron schedules refactored and runner table refactored ♻️
+* Maintenance: formatting 🎨
 
 = v3.0.9 (2024-08-20) =
 
-* Refactor: cron - ability to select CRON schedule
+* Refactor: cron - Ability to select CRON schedule
 
 = v3.0.8 (2024-06-07) =
 
-* Fix: ui - fixed an issue with loading of inputs
+* Fix: ui - Fixed an issue with loadin of inputs. 🐛
 
 = v3.0.7 (2024-06-06) =
 
-* Maintenance: code cleanup
-* Fix: fix cron arguments, and clean up logic
-* Refactor: changed cron runner to single script schedule
+* Code cleanup
+* Fix cron arguments, and clean up logic.
+* Changed cron runner to single script schedule.
 
 = v3.0.6 (2024-04-09) =
 
@@ -149,7 +155,7 @@ Yes. Use `wp runner list` to see registered scripts and `wp runner run <script>`
 
 = v3.0.2 (2024-04-09) =
 
-* Fix: fixed an issue with checkbox styling
+* Feature: fixed an issue with checkbox styling
 
 = v3.0.1 (2024-04-09) =
 
@@ -157,23 +163,27 @@ Yes. Use `wp runner list` to see registered scripts and `wp runner run <script>`
 
 = v3.0.0 (2024-04-04) =
 
-* Feature: export now supports CSV, plus other minor improvements
+* Feature: Export now supports CSV + some other minor improvements
 * Fix: PHP 8.0 compatibility fix
 
 = v2.2.0 (2024-03-28) =
 
-* Refactor: ui - refactored UI and inputs to allow for more varied inputs
+* Refactor: ui - Refactored UI + Inputs to allow for more varied inputs :sparkles:
 * Maintenance: formatting
-* Maintenance: disable warnings in rest-runner.php
+* Update rest-runner.php. Disable Warnings
 
 = v2.1.1 (2024-03-18) =
 
-* Feature: title updated to reflect selected runner's title
+* Feature: Title updated to reflect selected runners Title
+* Maintenance: release version 2.1.1
 
 = v2.1.0 (2024-02-09) =
 
-* Feature: cron functionality and basic cron management
-* Feature: added log file writing
+* Release candidate.
+* Everything should work now, UI is still not there.
+* Code should work, UI still sucks.
+* Cron functionality, added log file writing.
+* Basic cron management.
 
 = v2.0.1 (2024-01-25) =
 
@@ -181,34 +191,39 @@ Yes. Use `wp runner list` to see registered scripts and `wp runner run <script>`
 
 = v2.0.0 (2024-01-12) =
 
-* Breaking: custom script arguments now use a class to improve usability
-* Fix: fix warning for missing 'input' section
-* Maintenance: cleanup and final tweaks before release
+* Fix: Fix warning for missing 'input' section.
+* Maintenance: Cleanup and final tweaks before release.
+* Breaking: Custom script arguments now uses a class to improve usability.
 
 = v1.1.2 (2024-01-02) =
 
-* Fix: added newline between outputs
+* Added newline between outputs.
 
 = v1.1.1 (2024-01-02) =
 
-* Feature: added input field support
-* Feature: added export class for exporting data to file
-* Feature: file exporter now manages JSON data
-* Maintenance: added version sync from package.json
-* Maintenance: prettier
+* Maintenance: Prettier
+* Maintenance: Added version sync from package.json
+* Maintenance: file exporter now manages JSON data
+* Feature: Added input field support.
+* Feature: Added export class for exporting data to file.
+* Version update
 
 = v1.0.2 (2023-12-21) =
 
-* Maintenance: add versioning scripts
+* Maintenance: Add versioning scripts.
 * Maintenance: update composer installer
-* Maintenance: formatting and npm scaffolding
-* Maintenance: updated package name in composer
+* Maintenance: formatting and npm scaffolding.
+* Maintenance: updated package name in composer.
 
 = v1.0.1 (2023-11-09) =
 
-* Fix: rest - some callable checks improvements and respond correctly
+* Fix: rest - Some callable checks improvements and respond correctly.
 
 = v1.0.0 (2023-11-09) =
 
-* Feature: initial release with admin runner page, return value support and scrolling output
-* Maintenance: added composer.json
+* Added composer json
+* Return value support
+* Scroll output and styling.
+* Readme fix
+* Added files.
+* Initial commit
