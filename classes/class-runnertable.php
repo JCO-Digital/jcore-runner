@@ -124,7 +124,12 @@ class RunnerTable extends WP_List_Table {
 					$time .= ' ' . wp_date( get_option( 'date_format' ), $next );
 				}
 				// translators: Time and possible date.
-				$content = '<span class="jcore-runner-schedule">' . esc_html( sprintf( __( 'Next Scheduled Run: %s', 'jcore-runner' ), $time ) ) . '</span>';
+				$content    = '<span class="jcore-runner-schedule">' . esc_html( sprintf( __( 'Next Scheduled Run: %s', 'jcore-runner' ), $time ) ) . '</span>';
+				$recurrence = wp_get_schedule( get_hook_name( $item['id'] ) );
+				$schedules  = wp_get_schedules();
+				if ( $recurrence && isset( $schedules[ $recurrence ] ) ) {
+					$content .= ' <span class="jcore-runner-badge jcore-runner-badge--interval">' . esc_html( $schedules[ $recurrence ]['display'] ) . '</span>';
+				}
 				if ( wp_next_scheduled( get_hook_name( $item['id'], true ) ) ) {
 					$content .= ' <span class="jcore-runner-badge">' . esc_html__( 'In progress', 'jcore-runner' ) . '</span>';
 				}

@@ -86,6 +86,12 @@
   padding: 4px 8px;
 }
 
+.jcore-runner-badge--interval {
+  background: #e7f4f1;
+  border-color: #a9d6cc;
+  color: var(--runner-primary);
+}
+
 .jcore-runner-back {
   align-items: center;
   color: var(--runner-primary);

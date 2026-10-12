@@ -107,22 +107,22 @@ function schedule_action( string $script, string $action ) {
 function add_cron_interval( $schedules ) {
 	$schedules['every_minute'] = array(
 		'interval'        => 60,
-		'display'         => __( 'Every Minute' ),
+		'display'         => __( 'Every Minute', 'jcore-runner' ),
 		'is_jcore_runner' => true,
 	);
 	$schedules['jcore_hourly'] = array(
 		'interval'        => 3600,
-		'display'         => __( 'Hourly' ),
+		'display'         => __( 'Hourly', 'jcore-runner' ),
 		'is_jcore_runner' => true,
 	);
 	$schedules['jcore_daily']  = array(
 		'interval'        => 86400,
-		'display'         => __( 'Daily' ),
+		'display'         => __( 'Daily', 'jcore-runner' ),
 		'is_jcore_runner' => true,
 	);
 	$schedules['jcore_weekly'] = array(
 		'interval'        => 604800,
-		'display'         => __( 'Weekly' ),
+		'display'         => __( 'Weekly', 'jcore-runner' ),
 		'is_jcore_runner' => true,
 	);
 	return apply_filters( 'jcore_runner_cron_schedules', $schedules );
