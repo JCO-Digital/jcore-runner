@@ -22,6 +22,12 @@ class File {
 	 */
 	protected static string $dir = '/jcore-runner';
 
+	/**
+	 * Sections that are only served through WordPress, never directly from uploads.
+	 *
+	 * @var string[] $private_sections
+	 */
+	protected static array $private_sections = array( 'logs' );
 
 	/**
 	 * The file being operated on.
@@ -78,6 +84,9 @@ class File {
 				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
 				mkdir( $upload['basedir'] . $dir );
 			}
+			if ( in_array( $section, static::$private_sections, true ) ) {
+				static::deny_web_access( $upload['basedir'] . $dir );
+			}
 		}
 		if ( ! empty( $filename ) ) {
 			$dir .= '/' . $filename;
@@ -86,6 +95,26 @@ class File {
 		return array(
 			'path' => $upload['basedir'] . $dir,
 			'url'  => $upload['baseurl'] . $dir,
+		);
+	}
+
+	/**
+	 * Block direct web access to a folder on Apache. Other servers need their own rule.
+	 *
+	 * @param string $path Absolute path of the folder.
+	 * @return void
+	 */
+	protected static function deny_web_access( string $path ) {
+		$htaccess = $path . '/.htaccess';
+		if ( file_exists( $htaccess ) ) {
+			return;
+		}
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		file_put_contents(
+			$htaccess,
+			"# Files are downloaded through WordPress by JCORE Script Runner.\n" .
+			"<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n" .
+			"<IfModule !mod_authz_core.c>\n\tDeny from all\n</IfModule>\n"
 		);
 	}
 
@@ -125,6 +154,51 @@ class File {
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * Get the log or export files of a script, newest first.
+	 *
+	 * @param string $section The section, "logs" or "export".
+	 * @param string $script Script name.
+	 * @param int    $number Max number of files, 0 for all.
+	 * @return array
+	 */
+	public static function get_script_files( string $section, string $script, int $number = 0 ) {
+		// Match the exact naming of each section, so scripts sharing a prefix or suffix don't see each other's files.
+		$patterns = array(
+			'logs'   => '/^\d{4}-\d{2}-\d{2}-(cron-)?' . preg_quote( $script, '/' ) . '\.log$/',
+			'export' => '/^' . preg_quote( $script, '/' ) . '-\d{14}\.[a-z]+$/',
+		);
+		if ( empty( $patterns[ $section ] ) ) {
+			return array();
+		}
+		$files = array_values(
+			array_filter(
+				static::get_files( $section, $script, PHP_INT_MAX ),
+				static function ( $file ) use ( $patterns, $section ) {
+					return 1 === preg_match( $patterns[ $section ], $file['name'] );
+				}
+			)
+		);
+		return $number > 0 ? array_slice( $files, 0, $number ) : $files;
+	}
+
+	/**
+	 * Find a log or export file of a script by name.
+	 *
+	 * @param string $section The section, "logs" or "export".
+	 * @param string $script Script name.
+	 * @param string $name Filename.
+	 * @return array|null
+	 */
+	public static function find_script_file( string $section, string $script, string $name ) {
+		foreach ( static::get_script_files( $section, $script ) as $file ) {
+			if ( $file['name'] === $name ) {
+				return $file;
+			}
+		}
+		return null;
 	}
 
 	/**

@@ -152,18 +152,27 @@ class RunnerTable extends WP_List_Table {
 				);
 			}
 		} elseif ( 'log' === $column_name ) {
-			foreach ( File::get_files( 'logs', $item['id'] . '.log', 2 ) as $file ) {
+			$files = File::get_script_files( 'logs', $item['id'] );
+			foreach ( array_slice( $files, 0, 2 ) as $file ) {
 				$content .= sprintf(
 					'<a href="%s">%s</a><br/>',
-					esc_url( $file['url'] ),
+					esc_url( get_log_url( $item['id'], $file['name'] ) ),
 					esc_html( $file['name'] ),
 				);
 			}
+			if ( ! empty( $files ) ) {
+				$actions['logs'] = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( get_log_url( $item['id'] ) ),
+					// translators: %d: Number of log files.
+					esc_html( sprintf( __( 'View all (%d)', 'jcore-runner' ), count( $files ) ) )
+				);
+			}
 		} elseif ( 'export' === $column_name ) {
-			foreach ( File::get_files( 'export', $item['id'] . '-', 2 ) as $file ) {
+			foreach ( File::get_script_files( 'export', $item['id'], 2 ) as $file ) {
 				$content .= sprintf(
 					'<a href="%s">%s</a><br/>',
-					esc_url( $file['url'] ),
+					esc_url( get_download_url( 'export', $item['id'], $file['name'] ) ),
 					esc_html( $file['name'] ),
 				);
 			}

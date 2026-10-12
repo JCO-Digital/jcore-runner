@@ -7,7 +7,7 @@ A powerful WordPress utility for managing, running, and scheduling maintenance s
 - **Admin UI**: Easily run scripts from the WordPress "Tools" menu.
 - **Pagination**: Handle heavy tasks by splitting execution into multiple requests to avoid timeouts.
 - **Scheduling**: Built-in support for WP-Cron with customizable intervals.
-- **Logging**: Automatically captures `echo` output and saves it to daily log files.
+- **Logging**: Automatically captures `echo` output and saves it to daily log files, which can be read and downloaded in the admin.
 - **Exports**: Built-in `Export` class to generate CSV or JSON files.
 - **Input Fields**: Support for user inputs including text, select (with Select2), dates, and file uploads.
 
@@ -152,6 +152,14 @@ Scripts registered via `jcore_runner_functions` can be scheduled directly from t
 - `jcore_daily`
 - `jcore_weekly`
 
+The table shows the interval and next run of each scheduled script.
+
+### Logs and Exports
+
+The Logs column links to a log viewer for each script, which lists its log files and shows the selected one. Large logs are cut to the last 512 KB, which can be changed with the `jcore_runner_log_max_bytes` filter.
+
+Logs and exports are downloaded through `admin-post.php`, for users with `manage_options`, so downloads work on servers that block direct access to `.log` files. The `logs` folder in uploads gets an `.htaccess` that denies web access on Apache. On nginx, add a rule for `/wp-content/uploads/jcore-runner/logs/` yourself.
+
 ### WP-CLI
 
 Scripts registered via `jcore_runner_functions` are also available through WP-CLI.
@@ -170,6 +178,7 @@ The CLI runner supports paginated scripts and accepts registered input fields as
 - `jcore_runner_title`: Change the page title in Admin.
 - `jcore_runner_menu`: Change the menu label.
 - `jcore_runner_cron_schedules`: Add custom cron intervals.
+- `jcore_runner_log_max_bytes`: Max bytes of a log shown in the log viewer (default 512 KB).
 
 ## Requirements
 

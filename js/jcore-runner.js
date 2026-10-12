@@ -113,9 +113,9 @@ function jcoreRunnerCallEndpoint(script, settings) {
 					document.getElementById("jcore-runner-export-download").remove();
 				}
 				const a = document.createElement("a");
-				const url = `${jcore_export_url}${jsonData.exportFile}.${
-					jsonData.exportFileExtension ?? "json"
-				}`;
+				const url = `${jcore_export_url}${encodeURIComponent(
+					`${jsonData.exportFile}.${jsonData.exportFileExtension ?? "json"}`,
+				)}`;
 				a.id = "jcore-runner-export-download";
 				a.href = url;
 				a.download = "";
