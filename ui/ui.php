@@ -63,28 +63,11 @@ function register_input_scripts( mixed $type ): void {
 }
 
 /**
- * Render the script runner view.
- *
- * @param array $params The script parameters.
+ * Render the link back to the script list.
  *
  * @return void
  */
-function render_script_page( array $params ) {
-	script_register( 'jcore_runner', '/js/jcore-runner.js', array( 'wp-api-request' ) );
-	wp_enqueue_script( 'jcore_runner' );
-	$export_dir = File::get_upload_dir( 'export' )['url'];
-	wp_add_inline_script(
-		'jcore_runner',
-		'const jcore_export_url = "' . esc_js( trailingslashit( $export_dir ) ) . '";',
-		'before'
-	);
-
-	if ( ! empty( $params['input'] ) ) {
-		foreach ( $params['input'] as $field => $input ) {
-			register_input_scripts( $input['type'] );
-		}
-	}
-
+function render_back_link() {
 	printf(
 		'<a class="jcore-runner-back" href="%s">%s<span>%s</span></a>',
 		esc_url(
@@ -98,10 +81,38 @@ function render_script_page( array $params ) {
 		'<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>',
 		esc_html__( 'All scripts', 'jcore-runner' )
 	);
+}
+
+/**
+ * Render the script runner view.
+ *
+ * @param array $params The script parameters.
+ *
+ * @return void
+ */
+function render_script_page( array $params ) {
+	script_register( 'jcore_runner', '/js/jcore-runner.js', array( 'wp-api-request' ) );
+	wp_enqueue_script( 'jcore_runner' );
+	wp_add_inline_script(
+		'jcore_runner',
+		'const jcore_export_url = ' . wp_json_encode( get_download_url( 'export', $params['id'] ) . '&file=' ) . ';',
+		'before'
+	);
+
+	if ( ! empty( $params['input'] ) ) {
+		foreach ( $params['input'] as $field => $input ) {
+			register_input_scripts( $input['type'] );
+		}
+	}
+
+	render_back_link();
 
 	echo '<div class="jcore-runner-script-header">';
 	echo '<h1>' . esc_html( $params['title'] ) . '</h1>';
 	echo '<div id="jcore-runner-progress" class="jcore-runner-progress" role="status" aria-live="polite">' . esc_html__( 'Ready', 'jcore-runner' ) . '</div>';
+	if ( ! empty( File::get_script_files( 'logs', $params['id'], 1 ) ) ) {
+		echo '<a class="jcore-runner-header-link" href="' . esc_url( get_log_url( $params['id'] ) ) . '">' . esc_html__( 'View logs', 'jcore-runner' ) . '</a>';
+	}
 	echo '</div>';
 	echo '<div class="jcore-runner-panel jcore-runner-controls">';
 	echo '<div id="jcore-runner-input">';
@@ -140,6 +151,83 @@ function render_script_page( array $params ) {
 	}
 	echo '</div>';
 	echo '<pre id="jcore-runner-output" aria-live="polite"></pre>';
+}
+
+/**
+ * Render the log viewer for a script.
+ *
+ * @param array $params The script parameters.
+ *
+ * @return void
+ */
+function render_log_page( array $params ) {
+	// Only show the tail of large logs, to keep the page responsive.
+	$max_bytes = (int) apply_filters( 'jcore_runner_log_max_bytes', 512 * KB_IN_BYTES );
+	$files     = File::get_script_files( 'logs', $params['id'] );
+	$current   = $files[0] ?? null;
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$requested = isset( $_GET['file'] ) ? sanitize_file_name( wp_unslash( $_GET['file'] ) ) : '';
+	foreach ( $files as $file ) {
+		if ( $file['name'] === $requested ) {
+			$current = $file;
+		}
+	}
+
+	render_back_link();
+
+	echo '<div class="jcore-runner-script-header">';
+	// translators: %s: Script name.
+	echo '<h1>' . esc_html( sprintf( __( 'Logs: %s', 'jcore-runner' ), $params['title'] ) ) . '</h1>';
+	printf(
+		'<a class="jcore-runner-header-link" href="%s">%s</a>',
+		esc_url(
+			add_query_arg(
+				array(
+					'page'   => 'jcore-runner',
+					'script' => $params['id'],
+				),
+				admin_url( 'tools.php' )
+			)
+		),
+		esc_html__( 'Open script', 'jcore-runner' )
+	);
+	echo '</div>';
+
+	if ( null === $current ) {
+		echo '<div class="jcore-runner-panel jcore-runner-status"><p class="jcore-runner-empty">' . esc_html__( 'No logs found for this script.', 'jcore-runner' ) . '</p></div>';
+		return;
+	}
+
+	echo '<div class="jcore-runner-logs">';
+	echo '<nav class="jcore-runner-panel jcore-runner-log-files" aria-label="' . esc_attr__( 'Log files', 'jcore-runner' ) . '"><ul>';
+	foreach ( $files as $file ) {
+		printf(
+			'<li><a href="%s"%s>%s</a></li>',
+			esc_url( get_log_url( $params['id'], $file['name'] ) ),
+			$file['name'] === $current['name'] ? ' aria-current="page"' : '',
+			esc_html( $file['name'] )
+		);
+	}
+	echo '</ul></nav>';
+
+	$size   = (int) filesize( $current['path'] );
+	$offset = max( 0, $size - $max_bytes );
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	$content = (string) file_get_contents( $current['path'], false, null, $offset );
+
+	echo '<div class="jcore-runner-log-view">';
+	echo '<div class="jcore-runner-log-meta">';
+	echo '<strong>' . esc_html( $current['name'] ) . '</strong>';
+	echo '<span class="jcore-runner-muted">' . esc_html( size_format( $size, $size < KB_IN_BYTES ? 0 : 1 ) ) . '</span>';
+	echo '<a href="' . esc_url( get_download_url( 'logs', $params['id'], $current['name'] ) ) . '">' . esc_html__( 'Download', 'jcore-runner' ) . '</a>';
+	echo '</div>';
+	if ( $offset > 0 ) {
+		// translators: %s: Size of the shown part of the log.
+		echo '<p class="jcore-runner-muted">' . esc_html( sprintf( __( 'Showing the last %s of the log.', 'jcore-runner' ), size_format( $max_bytes ) ) ) . '</p>';
+	}
+	echo '<pre class="jcore-runner-log">' . esc_html( $content ) . '</pre>';
+	echo '</div>';
+	echo '</div>';
 }
 
 /**

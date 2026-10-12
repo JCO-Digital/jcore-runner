@@ -86,6 +86,12 @@
   padding: 4px 8px;
 }
 
+.jcore-runner-badge--interval {
+  background: #e7f4f1;
+  border-color: #a9d6cc;
+  color: var(--runner-primary);
+}
+
 .jcore-runner-back {
   align-items: center;
   color: var(--runner-primary);
@@ -286,7 +292,8 @@
   padding: 10px 12px;
 }
 
-#jcore-runner-output {
+#jcore-runner-output,
+.jcore-runner-log {
   background: var(--runner-terminal);
   border: 1px solid #1d302b;
   border-radius: 8px;
@@ -302,6 +309,73 @@
   white-space: pre-wrap;
   width: auto;
   word-wrap: break-word;
+}
+
+.jcore-runner-header-link {
+  color: var(--runner-primary);
+  font-weight: 650;
+  margin-left: 12px;
+  vertical-align: middle;
+}
+
+.jcore-runner-logs {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 260px minmax(0, 1fr);
+}
+
+.jcore-runner-log-files {
+  align-self: start;
+  max-height: min(70vh, 720px);
+  overflow: auto;
+}
+
+.jcore-runner-log-files ul {
+  margin: 0;
+  padding: 6px;
+}
+
+.jcore-runner-log-files li {
+  margin: 0;
+}
+
+.jcore-runner-log-files a {
+  border-radius: 6px;
+  color: var(--runner-ink);
+  display: block;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 12px;
+  padding: 7px 10px;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.jcore-runner-log-files a:hover,
+.jcore-runner-log-files a:focus {
+  background: var(--runner-panel-soft);
+  color: var(--runner-primary-dark);
+}
+
+.jcore-runner-log-files a[aria-current="page"] {
+  background: #e7f4f1;
+  color: var(--runner-primary-dark);
+  font-weight: 650;
+}
+
+.jcore-runner-log-meta {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.jcore-runner-log-view > p {
+  margin: 0 0 10px;
+}
+
+.jcore-runner-log {
+  height: min(70vh, 720px);
 }
 
 #jcore-runner-export-download {
@@ -334,7 +408,8 @@
     display: block;
   }
 
-  .jcore-runner-controls {
+  .jcore-runner-controls,
+  .jcore-runner-logs {
     grid-template-columns: 1fr;
   }
 

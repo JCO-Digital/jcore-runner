@@ -124,7 +124,12 @@ class RunnerTable extends WP_List_Table {
 					$time .= ' ' . wp_date( get_option( 'date_format' ), $next );
 				}
 				// translators: Time and possible date.
-				$content = '<span class="jcore-runner-schedule">' . esc_html( sprintf( __( 'Next Scheduled Run: %s', 'jcore-runner' ), $time ) ) . '</span>';
+				$content    = '<span class="jcore-runner-schedule">' . esc_html( sprintf( __( 'Next Scheduled Run: %s', 'jcore-runner' ), $time ) ) . '</span>';
+				$recurrence = wp_get_schedule( get_hook_name( $item['id'] ) );
+				$schedules  = wp_get_schedules();
+				if ( $recurrence && isset( $schedules[ $recurrence ] ) ) {
+					$content .= ' <span class="jcore-runner-badge jcore-runner-badge--interval">' . esc_html( $schedules[ $recurrence ]['display'] ) . '</span>';
+				}
 				if ( wp_next_scheduled( get_hook_name( $item['id'], true ) ) ) {
 					$content .= ' <span class="jcore-runner-badge">' . esc_html__( 'In progress', 'jcore-runner' ) . '</span>';
 				}
@@ -147,18 +152,27 @@ class RunnerTable extends WP_List_Table {
 				);
 			}
 		} elseif ( 'log' === $column_name ) {
-			foreach ( File::get_files( 'logs', $item['id'] . '.log', 2 ) as $file ) {
+			$files = File::get_script_files( 'logs', $item['id'] );
+			foreach ( array_slice( $files, 0, 2 ) as $file ) {
 				$content .= sprintf(
 					'<a href="%s">%s</a><br/>',
-					esc_url( $file['url'] ),
+					esc_url( get_log_url( $item['id'], $file['name'] ) ),
 					esc_html( $file['name'] ),
 				);
 			}
+			if ( ! empty( $files ) ) {
+				$actions['logs'] = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url( get_log_url( $item['id'] ) ),
+					// translators: %d: Number of log files.
+					esc_html( sprintf( __( 'View all (%d)', 'jcore-runner' ), count( $files ) ) )
+				);
+			}
 		} elseif ( 'export' === $column_name ) {
-			foreach ( File::get_files( 'export', $item['id'] . '-', 2 ) as $file ) {
+			foreach ( File::get_script_files( 'export', $item['id'], 2 ) as $file ) {
 				$content .= sprintf(
 					'<a href="%s">%s</a><br/>',
-					esc_url( $file['url'] ),
+					esc_url( get_download_url( 'export', $item['id'], $file['name'] ) ),
 					esc_html( $file['name'] ),
 				);
 			}

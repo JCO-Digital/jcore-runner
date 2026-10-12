@@ -72,9 +72,12 @@ function show_admin_page() {
 	wp_enqueue_style( 'jcore_runner' );
 
 	$script = get_script_from_url( 'script' );
+	$logs   = get_script_from_url( 'logs' );
 
 	echo '<div class="wrap jcore-runner-wrap">';
-	if ( ! $script ) {
+	if ( $logs ) {
+		render_log_page( $logs );
+	} elseif ( ! $script ) {
 		$table = new RunnerTable();
 		$table->prepare_items();
 
@@ -113,13 +116,53 @@ function handle_cron_action(): void {
 }
 add_action( 'admin_init', '\Jcore\Runner\handle_cron_action' );
 
+/**
+ * Stream a log or export file as a download.
+ *
+ * @return void
+ */
+function handle_download(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You do not have permission to download this file.', 'jcore-runner' ), 403 );
+	}
+	check_admin_referer( 'jcore_runner_download' );
+
+	$script  = get_script_from_url( 'download' );
+	$section = isset( $_GET['section'] ) ? sanitize_key( wp_unslash( $_GET['section'] ) ) : '';
+	$name    = isset( $_GET['file'] ) ? sanitize_file_name( wp_unslash( $_GET['file'] ) ) : '';
+	// Only serve files from the script's own file list, never an arbitrary path.
+	$file = $script ? File::find_script_file( $section, $script['id'], $name ) : null;
+	if ( null === $file ) {
+		wp_die( esc_html__( 'File not found.', 'jcore-runner' ), 404 );
+	}
+
+	$types = array(
+		'log'  => 'text/plain; charset=utf-8',
+		'csv'  => 'text/csv; charset=utf-8',
+		'json' => 'application/json; charset=utf-8',
+	);
+	nocache_headers();
+	header( 'Content-Type: ' . ( $types[ pathinfo( $file['name'], PATHINFO_EXTENSION ) ] ?? 'application/octet-stream' ) );
+	header( 'Content-Disposition: attachment; filename="' . $file['name'] . '"' );
+	header( 'Content-Length: ' . filesize( $file['path'] ) );
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+	readfile( $file['path'] );
+	exit();
+}
+add_action( 'admin_post_jcore_runner_download', '\Jcore\Runner\handle_download' );
+
 // Handles setting the title to be the script name to better see which is which when multiple runners are open.
 add_filter(
 	'admin_title',
 	static function ( $admin_title, $title ) {
 		$script = get_script_from_url( 'script' );
 		if ( ! $script ) {
-			return $admin_title;
+			$script = get_script_from_url( 'logs' );
+			if ( ! $script ) {
+				return $admin_title;
+			}
+			// translators: %s: Script name.
+			$script['title'] = sprintf( __( 'Logs: %s', 'jcore-runner' ), $script['title'] );
 		}
 		// translators: %1$s: Script name, %2$s: Original title.
 		return sprintf( __( '%1$s &#8212; %2$s', 'jcore-runner' ), $script['title'], $title );

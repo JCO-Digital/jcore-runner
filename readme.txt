@@ -19,7 +19,7 @@ JCORE Script Runner gives developers a place to register maintenance and utility
 * Scripts are listed under Tools, with search, and each one runs on its own page with a live console.
 * Scripts can take input: text, numbers, email, select lists, dates and file uploads.
 * Any script can be scheduled with WP-Cron directly from the list, using built-in every-minute, hourly, daily and weekly intervals.
-* Every run is captured to a daily log file.
+* Every run is captured to a daily log file, which can be read and downloaded from the admin.
 
 **For developers**
 
@@ -36,6 +36,7 @@ JCORE Script Runner gives developers a place to register maintenance and utility
 * `jcore_runner_status` registers status fields.
 * `jcore_runner_title` and `jcore_runner_menu` change the page and menu titles.
 * `jcore_runner_cron_schedules` adds cron intervals.
+* `jcore_runner_log_max_bytes` sets how much of a log the log viewer shows.
 
 == Installation ==
 
@@ -57,7 +58,7 @@ Do a slice of the work, call `$args->set_next_page()`, and return. The runner st
 
 = Where are the logs? =
 
-Output from every run is appended to a daily log file in the uploads directory, and shown live in the console while the script runs.
+Output from every run is appended to a daily log file in the uploads directory, and shown live in the console while the script runs. Open them from the Logs column in the script list to read or download them. Downloads go through WordPress, so they work even when the server blocks direct access to `.log` files.
 
 = Can I run scripts without the browser? =
 

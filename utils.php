@@ -132,6 +132,49 @@ function get_script_from_url( string $name = 'script' ) {
 }
 
 /**
+ * Returns the admin URL of the log viewer.
+ *
+ * @param string $script Name of script.
+ * @param string $file Optional log filename.
+ * @return string
+ */
+function get_log_url( string $script, string $file = '' ) {
+	return add_query_arg(
+		array_filter(
+			array(
+				'page' => 'jcore-runner',
+				'logs' => $script,
+				'file' => $file,
+			)
+		),
+		admin_url( 'tools.php' )
+	);
+}
+
+/**
+ * Returns the URL that downloads a log or export file through WordPress, since direct access to the files is often blocked.
+ *
+ * @param string $section The section, "logs" or "export".
+ * @param string $script Name of script.
+ * @param string $file Filename, can be left out and appended later.
+ * @return string
+ */
+function get_download_url( string $section, string $script, string $file = '' ) {
+	return add_query_arg(
+		array_filter(
+			array(
+				'action'   => 'jcore_runner_download',
+				'section'  => $section,
+				'download' => $script,
+				'_wpnonce' => wp_create_nonce( 'jcore_runner_download' ),
+				'file'     => $file,
+			)
+		),
+		admin_url( 'admin-post.php' )
+	);
+}
+
+/**
  * Returns name of cron hook.
  *
  * @param string $script Name of script.
