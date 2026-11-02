@@ -4,7 +4,7 @@ Tags: maintenance, scripts, cron, wp-cli, tools
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 4.5.0
+Stable tag: 4.5.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,7 +66,11 @@ Yes. Use `wp runner list` to see registered scripts and `wp runner run <script>`
 
 == Changelog ==
 
-= 4.5.0 (2026-10-12) =
+= 4.5.1 (2026-11-02) =
+
+* CI: release - keep publishing to the dist repo
+
+= v4.5.0 (2026-10-12) =
 
 * Feature: view and download logs and exports in the admin
 * Feature: show the interval of scheduled scripts
